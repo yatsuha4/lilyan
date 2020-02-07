@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'optparse'
+
 class Input
   def initialize(src)
     @buff = File.read(src)
@@ -25,23 +27,28 @@ end
 class Parser
   INDENT = '  '
 
-  def initialize(output = STDOUT)
-    @output = output
+  def initialize
+    @name = 'Parser'
+    @output = STDOUT
   end
+  attr_accessor :name
+  attr_accessor :output
 
   def parse(src)
     input = Input.new(src)
-    print("class Parser : public lilyan::Parser {\n")
+    print("#include \"lilyan/lilyan.hpp\"\n")
+    print("class #{@name} : public lilyan::Parser {\n")
     print(" public:\n")
     funcs = Hash.new
     while(!input.end?)
       if match = input.token('(\w+)\s*:')
-        print("std::any #{match[1]}(Input& input) {\n", 1)
+        print("std::any #{match[1]}(lilyan::Input& input) {\n", 1)
         rule = match[1]
+        debug("std::cerr << \"#{rule}\" << std::endl;\n", 2)
         while(!input.token(';'))
           print("{\n", 2)
-          print("Input _input(input);\n", 3)
-          print("Semantic semantic;\n", 3)
+          print("lilyan::Input _input(input);\n", 3)
+          print("lilyan::Semantic semantic;\n", 3)
           first = true
           while(!input.token('->'))
             if first
@@ -57,9 +64,11 @@ class Parser
             elsif match = input.token('\'(.+)\'')
               print("_input.match(std::string(\"#{match[1]}\"))")
             elsif match = input.token('\"(.+)\"')
-              print("_input.match(std::regex(R\"\\A#{match[1]}\"))")
+              #print("_input.match(std::regex(R\"(#{match[1]})\"))")
+              print("_input.matchRegex(std::string(R\"(#{match[1]})\"))")
             elsif match = input.token('\/(.+)\/')
-              print("_input.match(std::regex(R\"\\A#{match[1]}\"))")
+              #print("_input.match(std::regex(R\"(#{match[1]})\"))")
+              print("_input.matchRegex(std::string(R\"(#{match[1]})\"))")
             else
               raise "syntax error"
             end
@@ -72,7 +81,9 @@ class Parser
             }
             funcs[match[1]] = args
             args = args.collect { |n| "semantic[#{n}]"}.join(", ")
-            print("return #{match[1]}(#{args})\n", 4)
+            debug("std::cerr << \"#{match[1]}\" << std::endl;\n", 4)
+            print("input = _input;\n", 4)
+            print("return checkValue(#{match[1]}(#{args}));\n", 4)
           else
             raise "syntax error"
           end
@@ -99,8 +110,20 @@ class Parser
     @output.print(INDENT * indent)
     @output.print(text)
   end
+
+  def debug(text, indent = 0)
+    print(text, indent)
+  end
 end
 
+#
+parser = Parser.new
+
+option = OptionParser.new
+option.on('-c', '--class=NAME') { |v| parser.name = v }
+option.on('-o', '--output=FILE') { |v| parser.output = File.open(v, 'w') }
+option.parse!(ARGV)
+
 ARGV.each { |src|
-  Parser.new.parse(src)
+  parser.parse(src)
 }

@@ -2,32 +2,15 @@
 	@file
 ***************************************************************************/
 #pragma once
-
-namespace lilyan {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-class Semantic {
- private:
-  std::vector<std::any> values_;
-
- public:
-  Semantic() = default;
-  ~Semantic() = default;
-
-  bool append(const std::any& value) {
-    if(value.has_value()) {
-      values_.push_back(value);
-      return true;
-    }
-    return false;
-  }
-
-  const std::any& operator[](size_t index) const {
-    return values_.at(index - 1);
-  }
-};
+#include <any>
+#include <vector>
+#include <string>
+#include <regex>
+#include <sstream>
+#include "lilyan/Parser.hpp"
 /***********************************************************************//**
 	$Id$
 ***************************************************************************/
-}

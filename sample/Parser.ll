@@ -3,17 +3,17 @@ main:
   ;
 
 expr:
-  term -> onExpr($1)
-  expr '+' term -> onAdd($1, $3)
-  expr '-' term -> onSub($1, $3)
+  number -> onExpr($1)
+  expr '+' number -> onAdd($1, $3)
+  expr '-' number -> onSub($1, $3)
   ;
 
 term:
-  number -> onTerm($1)
   term '*' number -> onMul($1, $3)
   term '/' number -> onDiv($1, $3)
+  number -> onTerm($1)
   ;
 
 number:
-  /[0-9]+/ -> onNumber($1)
+  /\d+/ -> onNumber($1)
   ;
