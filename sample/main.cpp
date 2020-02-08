@@ -19,6 +19,9 @@ class Main : public Parser {
   std::any onMul(const std::any& v1, const std::any& v2) override;
   std::any onDiv(const std::any& v1, const std::any& v2) override;
   std::any onNumber(const std::any& v1) override;
+  std::any toValue(const std::any& v1) override {
+    return v1;
+  }
 };
 /***********************************************************************//**
 	@brief 
