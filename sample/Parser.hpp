@@ -19,16 +19,7 @@ class Parser : public lilyan::Parser {
     {
       lilyan::Input _input(input);
       lilyan::Semantic semantic;
-      if(append(semantic, _input, number(_input))) {
-        std::cerr << "onExpr" << std::endl;
-        input = _input;
-        return checkValue(onExpr(semantic[1]));
-      }
-    }
-    {
-      lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, expr(_input)) &&
+      if(append(semantic, _input, number(_input)) &&
          append(semantic, _input, _input.match(std::string("+"))) &&
          append(semantic, _input, number(_input))) {
         std::cerr << "onAdd" << std::endl;
@@ -39,12 +30,21 @@ class Parser : public lilyan::Parser {
     {
       lilyan::Input _input(input);
       lilyan::Semantic semantic;
-      if(append(semantic, _input, expr(_input)) &&
+      if(append(semantic, _input, number(_input)) &&
          append(semantic, _input, _input.match(std::string("-"))) &&
          append(semantic, _input, number(_input))) {
         std::cerr << "onSub" << std::endl;
         input = _input;
         return checkValue(onSub(semantic[1], semantic[3]));
+      }
+    }
+    {
+      lilyan::Input _input(input);
+      lilyan::Semantic semantic;
+      if(append(semantic, _input, number(_input))) {
+        std::cerr << "onExpr" << std::endl;
+        input = _input;
+        return checkValue(onExpr(semantic[1]));
       }
     }
     return std::any();
@@ -101,9 +101,9 @@ class Parser : public lilyan::Parser {
   Parser() = default;
   virtual ~Parser() = default;
   virtual std::any onMainExpr(const std::any&) = 0;
-  virtual std::any onExpr(const std::any&) = 0;
   virtual std::any onAdd(const std::any&, const std::any&) = 0;
   virtual std::any onSub(const std::any&, const std::any&) = 0;
+  virtual std::any onExpr(const std::any&) = 0;
   virtual std::any onMul(const std::any&, const std::any&) = 0;
   virtual std::any onDiv(const std::any&, const std::any&) = 0;
   virtual std::any onTerm(const std::any&) = 0;

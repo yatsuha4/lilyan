@@ -27,7 +27,8 @@ class Input {
   //Input& operator=(const Input& src) = default;
 
   std::any match(const std::string& string) {
-    if(std::equal(std::begin(string), std::end(string), std::begin(text_.get()))) {
+    std::cerr << "match " << pos_ << " " << string << std::endl;
+    if(std::equal(string.begin(), string.end(), text_.get().begin() + pos_)) {
       seek(pos_ + string.length());
       return std::any(string);
     }
@@ -35,13 +36,13 @@ class Input {
   }
 
   std::any match(const std::regex& pattern) {
-    std::cerr << text_.get().substr(pos_) << std::endl;
+    std::cerr << pos_ << ":" << text_.get().substr(pos_) << std::endl;
     std::smatch m;
     if(std::regex_search(text_.get().cbegin() + pos_, text_.get().cend(), 
                          m, pattern, 
                          std::regex_constants::match_continuous)) {
-      std::cerr << "match" << std::endl;
       seek(pos_ + m[0].second - m[0].first);
+      std::cerr << "match " << pos_ << std::endl;
       return std::any(std::string(m[0].first, m[0].second));
     }
     return std::any();

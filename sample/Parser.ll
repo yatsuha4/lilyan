@@ -3,9 +3,9 @@ main:
   ;
 
 expr:
+  number '+' number -> onAdd($1, $3)
+  number '-' number -> onSub($1, $3)
   number -> onExpr($1)
-  expr '+' number -> onAdd($1, $3)
-  expr '-' number -> onSub($1, $3)
   ;
 
 term:
