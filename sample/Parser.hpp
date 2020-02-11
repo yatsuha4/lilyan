@@ -4,48 +4,46 @@ class Parser : public lilyan::Parser {
   std::any main(lilyan::Input& input) {
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, expr(_input))) {
-        std::cerr << "onMainExpr" << std::endl;
+      std::any result;
+      if(skip(_input) && (result = expr(_input)).has_value()) {
         input = _input;
-        return checkValue(onMainExpr(semantic[1]));
+        return result;
       }
     }
-    return checkValue(std::any());
+    return std::any();
   }
   std::any expr(lilyan::Input& input) {
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, term(_input))) {
-        std::cerr << "onExpr" << std::endl;
+      std::any result;
+      if(skip(_input) && (result = term(_input)).has_value()) {
         input = _input;
-        return expr(input, checkValue(onExpr(semantic[1])));
+        return expr(input, result);
       }
     }
-    return expr(input, checkValue(std::any()));
+    return expr(input, std::any());
   }
   std::any expr(lilyan::Input& input, const std::any& value) {
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, value) &&
-         append(semantic, _input, _input.match(std::string("+"))) &&
-         append(semantic, _input, term(_input))) {
-        std::cerr << "onAdd" << std::endl;
+      auto result = std::make_shared<List>(3);
+      if(skip(_input) && (result->at(1) = value).has_value() &&
+         skip(_input) && _input.match(std::string("+")).has_value() &&
+         skip(_input) && (result->at(2) = term(_input)).has_value()) {
+        result->at(0) = Func("onAdd", static_cast<func_t>(&Parser::onAdd));
         input = _input;
-        return expr(input, checkValue(onAdd(semantic[1], semantic[3])));
+        return expr(input, result);
       }
     }
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, value) &&
-         append(semantic, _input, _input.match(std::string("-"))) &&
-         append(semantic, _input, term(_input))) {
-        std::cerr << "onSub" << std::endl;
+      auto result = std::make_shared<List>(3);
+      if(skip(_input) && (result->at(1) = value).has_value() &&
+         skip(_input) && _input.match(std::string("-")).has_value() &&
+         skip(_input) && (result->at(2) = term(_input)).has_value()) {
+        result->at(0) = Func("onSub", static_cast<func_t>(&Parser::onSub));
         input = _input;
-        return expr(input, checkValue(onSub(semantic[1], semantic[3])));
+        return expr(input, result);
       }
     }
     return value;
@@ -53,36 +51,35 @@ class Parser : public lilyan::Parser {
   std::any term(lilyan::Input& input) {
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, number(_input))) {
-        std::cerr << "onTerm" << std::endl;
+      std::any result;
+      if(skip(_input) && (result = number(_input)).has_value()) {
         input = _input;
-        return term(input, checkValue(onTerm(semantic[1])));
+        return term(input, result);
       }
     }
-    return term(input, checkValue(std::any()));
+    return term(input, std::any());
   }
   std::any term(lilyan::Input& input, const std::any& value) {
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, value) &&
-         append(semantic, _input, _input.match(std::string("*"))) &&
-         append(semantic, _input, number(_input))) {
-        std::cerr << "onMul" << std::endl;
+      auto result = std::make_shared<List>(3);
+      if(skip(_input) && (result->at(1) = value).has_value() &&
+         skip(_input) && _input.match(std::string("*")).has_value() &&
+         skip(_input) && (result->at(2) = number(_input)).has_value()) {
+        result->at(0) = Func("onMul", static_cast<func_t>(&Parser::onMul));
         input = _input;
-        return term(input, checkValue(onMul(semantic[1], semantic[3])));
+        return term(input, result);
       }
     }
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, value) &&
-         append(semantic, _input, _input.match(std::string("/"))) &&
-         append(semantic, _input, number(_input))) {
-        std::cerr << "onDiv" << std::endl;
+      auto result = std::make_shared<List>(3);
+      if(skip(_input) && (result->at(1) = value).has_value() &&
+         skip(_input) && _input.match(std::string("/")).has_value() &&
+         skip(_input) && (result->at(2) = number(_input)).has_value()) {
+        result->at(0) = Func("onDiv", static_cast<func_t>(&Parser::onDiv));
         input = _input;
-        return term(input, checkValue(onDiv(semantic[1], semantic[3])));
+        return term(input, result);
       }
     }
     return value;
@@ -90,36 +87,31 @@ class Parser : public lilyan::Parser {
   std::any number(lilyan::Input& input) {
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, _input.matchRegex(std::string(R"(\d+)")))) {
-        std::cerr << "onNumber" << std::endl;
+      auto result = std::make_shared<List>(2);
+      if(skip(_input) && (result->at(1) = _input.match(std::regex(R"(\d+)"))).has_value()) {
+        result->at(0) = Func("onNumber", static_cast<func_t>(&Parser::onNumber));
         input = _input;
-        return checkValue(onNumber(semantic[1]));
+        return result;
       }
     }
     {
       lilyan::Input _input(input);
-      lilyan::Semantic semantic;
-      if(append(semantic, _input, _input.match(std::string("("))) &&
-         append(semantic, _input, expr(_input)) &&
-         append(semantic, _input, _input.match(std::string(")")))) {
-        std::cerr << "toValue" << std::endl;
+      std::any result;
+      if(skip(_input) && _input.match(std::string("(")).has_value() &&
+         skip(_input) && (result = expr(_input)).has_value() &&
+         skip(_input) && _input.match(std::string(")")).has_value()) {
         input = _input;
-        return checkValue(toValue(semantic[2]));
+        return result;
       }
     }
-    return checkValue(std::any());
+    return std::any();
   }
  protected:
   Parser() = default;
   virtual ~Parser() = default;
-  virtual std::any onMainExpr(const std::any&) = 0;
-  virtual std::any onAdd(const std::any&, const std::any&) = 0;
-  virtual std::any onSub(const std::any&, const std::any&) = 0;
-  virtual std::any onExpr(const std::any&) = 0;
-  virtual std::any onMul(const std::any&, const std::any&) = 0;
-  virtual std::any onDiv(const std::any&, const std::any&) = 0;
-  virtual std::any onTerm(const std::any&) = 0;
-  virtual std::any onNumber(const std::any&) = 0;
-  virtual std::any toValue(const std::any&) = 0;
+  virtual std::any onAdd(const List& args) = 0;
+  virtual std::any onSub(const List& args) = 0;
+  virtual std::any onMul(const List& args) = 0;
+  virtual std::any onDiv(const List& args) = 0;
+  virtual std::any onNumber(const List& args) = 0;
 };

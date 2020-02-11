@@ -91,9 +91,9 @@ class Rule
 
   def puts_return(output, value)
     if recursion?
-      output.puts("return #{@name.to_s}(input, checkValue(#{value}));")
+      output.puts("return #{@name.to_s}(input, #{value});")
     else
-      output.puts("return checkValue(#{value});")
+      output.puts("return #{value};")
     end
   end
 end
@@ -114,9 +114,9 @@ class List
   def write(output, rule)
     output.puts("{") {
       output.puts("lilyan::Input _input(input);")
-      output.puts("lilyan::Semantic semantic;")
+      @func.prematch(output)
       text = ''
-      @terms.each { |item|
+      @terms.each_with_index { |item, i|
         if text.empty?
           text << 'if('
         else
@@ -124,23 +124,25 @@ class List
           output.puts(text)
           text = '   '
         end
-        text << 'append(semantic, _input, '
-        case item
-        when Symbol
-          if item == rule.name
-            text << 'value'
-          else
-            text << "#{item.to_s}(_input)"
-          end
-        when String
-          text << "_input.match(std::string(\"#{item}\"))"
-        when Regexp
-          text << "_input.matchRegex(std::string(R\"(#{item.source})\"))"
-        end
-        text << ')'
+        text << 'skip(_input) && '
+        cond = case item
+               when Symbol
+                 if item == rule.name
+                   'value'
+                 else
+                   "#{item.to_s}(_input)"
+                 end
+               when String
+                 "_input.match(std::string(\"#{item}\"))"
+               when Regexp
+                 "_input.match(std::regex(R\"(#{item.source})\"))"
+               end
+        text << @func.match(i, cond) << ".has_value()";
       }
       output.puts(text + ') {') {
-        @func.write(output, rule)
+        @func.postmatch(output)
+        output.puts("input = _input;")
+        rule.puts_return(output, "result")
       }
       output.puts('}')
     }
@@ -155,17 +157,35 @@ class Func
     @args = args
   end
   attr_reader :name
+  attr_reader :args
 
-  def write(output, rule)
-    args = @args.collect { |n| "semantic[#{n}]"}.join(", ")
-    output.debug("std::cerr << \"#{@name}\" << std::endl;")
-    output.puts("input = _input;")
-    rule.puts_return(output, "#{@name}(#{args})")
+  def prematch(output)
+    if @name
+      output.puts("auto result = std::make_shared<List>(#{@args.size + 1});")
+    else
+      output.puts("std::any result;")
+    end
+  end
+
+  def match(index, cond)
+    if i = @args.find_index(index + 1)
+      if @name
+        cond = "(result->at(#{i + 1}) = #{cond})"
+      else
+        cond = "(result = #{cond})"
+      end
+    end
+    return cond
+  end
+
+  def postmatch(output)
+    if @name
+      output.puts("result->at(0) = Func(\"#{@name}\", static_cast<func_t>(&Parser::#{@name}));")
+    end
   end
 
   def to_s
-    args = @args.collect { "const std::any&" }.join(", ")
-    return "std::any #{@name}(#{args})"
+    return "std::any #{@name}(const List& args)"
   end
 end
 
@@ -209,6 +229,8 @@ class Parser
                             })
             list.func = func
             @funcs[func.name] = func
+          elsif match = input.token('\$(\d+)')
+            list.func = Func.new(nil, [ Integer(match[1]) ])
           else
             raise "syntax error"
           end

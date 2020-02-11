@@ -11,66 +11,42 @@ class Main : public Parser {
   Main() = default;
   ~Main() override = default;
 
-  std::any onMainExpr(const std::any& v1) override;
-  std::any onExpr(const std::any& v1) override;
-  std::any onAdd(const std::any& v1, const std::any& v2) override;
-  std::any onSub(const std::any& v1, const std::any& v2) override;
-  std::any onTerm(const std::any& v1) override;
-  std::any onMul(const std::any& v1, const std::any& v2) override;
-  std::any onDiv(const std::any& v1, const std::any& v2) override;
-  std::any onNumber(const std::any& v1) override;
-  std::any toValue(const std::any& v1) override {
-    return v1;
-  }
+  std::any onAdd(const List& args) override;
+  std::any onSub(const List& args) override;
+  std::any onMul(const List& args) override;
+  std::any onDiv(const List& args) override;
+  std::any onNumber(const List& args) override;
 };
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Main::onMainExpr(const std::any& v1) {
-  return v1;
+std::any Main::onAdd(const List& args) {
+  return std::any(std::any_cast<int>(args[1]) + std::any_cast<int>(args[2]));
 }
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Main::onExpr(const std::any& v1) {
-  return v1;
+std::any Main::onSub(const List& args) {
+  return std::any(std::any_cast<int>(args[1]) - std::any_cast<int>(args[2]));
 }
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Main::onAdd(const std::any& v1, const std::any& v2) {
-  return std::any(std::any_cast<int>(v1) + std::any_cast<int>(v2));
+std::any Main::onMul(const List& args) {
+  return std::any(std::any_cast<int>(args[1]) * std::any_cast<int>(args[2]));
 }
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Main::onSub(const std::any& v1, const std::any& v2) {
-  return std::any(std::any_cast<int>(v1) - std::any_cast<int>(v2));
+std::any Main::onDiv(const List& args) {
+  return std::any(std::any_cast<int>(args[1]) / std::any_cast<int>(args[2]));
 }
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Main::onTerm(const std::any& v1) {
-  return v1;
-}
-/***********************************************************************//**
-	@brief 
-***************************************************************************/
-std::any Main::onMul(const std::any& v1, const std::any& v2) {
-  return std::any(std::any_cast<int>(v1) * std::any_cast<int>(v2));
-}
-/***********************************************************************//**
-	@brief 
-***************************************************************************/
-std::any Main::onDiv(const std::any& v1, const std::any& v2) {
-  return std::any(std::any_cast<int>(v1) / std::any_cast<int>(v2));
-}
-/***********************************************************************//**
-	@brief 
-***************************************************************************/
-std::any Main::onNumber(const std::any& v1) {
-  std::cerr << "onNumber:" << std::any_cast<std::string>(v1) << std::endl;
-  return std::any(std::stoi(std::any_cast<std::string>(v1)));
+std::any Main::onNumber(const List& args) {
+  //std::cerr << "onNumber:" << std::any_cast<std::string>(args[1]) << std::endl;
+  return std::any(std::stoi(std::any_cast<std::string>(args[1])));
 }
 /***********************************************************************//**
 	@brief 
@@ -79,9 +55,11 @@ int main(int argc, const char** argv) {
   std::unique_ptr<Main> parser(new Main());
   std::string line;
   while(std::getline(std::cin, line)) {
-    std::cout << line << std::endl;
+    std::cout << ">" << line << std::endl;
     lilyan::Input input(line);
-    auto result = parser->main(input);
+    auto ast = parser->main(input);
+    parser->dump(std::cerr, ast);
+    auto result = parser->eval(ast);
     std::cout << "=> " << std::any_cast<int>(result) << std::endl;
   }
   return 0;
