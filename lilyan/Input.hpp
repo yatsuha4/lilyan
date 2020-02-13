@@ -16,24 +16,34 @@ class Input {
   size_t y_;
 
  public:
-  Input(const std::string& name, 
-        const std::shared_ptr<const std::string>& text)
-    : name_(std::make_shared<std::string>(name)), 
-      text_(text), 
-      pos_(0), 
+  Input()
+    : pos_(0), 
       x_(0), 
       y_(0)
-  {}
-  Input(const std::string& name)
-    : Input(name, Read(name))
-  {}
-  Input(const std::string& name, const std::string& text)
-    : Input(name, std::make_shared<std::string>(text))
   {}
   Input(const Input& src) = default;
   ~Input() = default;
 
   //Input& operator=(const Input& src) = default;
+
+  void read(const std::string& name) {
+    std::ifstream stream(name);
+    if(!stream.fail()) {
+      set(name, 
+          std::make_shared<std::string>
+          (std::istreambuf_iterator<char>(stream), 
+           std::istreambuf_iterator<char>()));
+    }
+  }
+
+  void set(const std::string& name, 
+           const std::shared_ptr<const std::string>& text) {
+    name_ = std::make_shared<std::string>(name);
+    text_ = text;
+    pos_ = 0;
+    x_ = 0;
+    y_ = 0;
+  }
 
   std::any match(const std::string& string) {
     if(std::equal(string.begin(), string.end(), text_->begin() + pos_)) {
@@ -78,15 +88,6 @@ class Input {
     return stream.str();
   }
 
-  static std::shared_ptr<std::string> Read(const std::string& name) {
-    std::ifstream stream(name);
-    if(!stream.fail()) {
-      return std::make_shared<std::string>
-        (std::istreambuf_iterator<char>(stream), 
-         std::istreambuf_iterator<char>());
-    }
-    return nullptr;
-  }
 };
 /***********************************************************************//**
 	$Id$

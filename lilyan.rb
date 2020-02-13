@@ -82,7 +82,7 @@ class Rule
   end
 
   def write(output)
-    output.puts("std::any #{self}(lilyan::Input& input) {") {
+    output.puts("std::any #{self}() {") {
       @list.each { |list|
         list.write(output, self)
       }
@@ -91,7 +91,7 @@ class Rule
     output.puts("}")
 
     unless @recursion.empty?
-      output.puts("std::any #{self}(lilyan::Input& input, const std::any& value) {") {
+      output.puts("std::any #{self}(const std::any& value) {") {
         @recursion.each { |list|
           list.write(output, self)
         }
@@ -103,7 +103,7 @@ class Rule
 
   def puts_return(output, value)
     if recursion?
-      output.puts("return #{self}(input, #{value});")
+      output.puts("return #{self}(#{value});")
     else
       output.puts("return #{value};")
     end
@@ -129,7 +129,7 @@ class List
 
   def write(output, rule)
     output.puts("{") {
-      output.puts("lilyan::Input _input(input);")
+      output.puts("lilyan::Input _input(getInput());")
       @action.prematch(output)
       text = ''
       @terms.each_with_index { |item, i|
@@ -145,19 +145,22 @@ class List
                  if item == rule.name
                    'value'
                  else
-                   (Rule[item] || raise('no such rule')).to_s + "(_input)"
+                   (Rule[item] || raise('no such rule')).to_s + "()"
                  end
                when String
-                 "getToken(_input, std::string(\"#{item}\"))"
+                 "getToken(std::string(\"#{item}\"))"
                when Regexp
-                 "getToken(_input, std::regex(R\"(#{item.source})\"))"
+                 "getToken(std::regex(R\"(#{item.source})\"))"
                end
         text << @action.match(i, cond) << ".has_value()";
       }
       output.puts(text + ') {') {
         @action.postmatch(output)
-        output.puts("input = _input;")
         rule.puts_return(output, "result")
+      }
+      output.puts('}')
+      output.puts('else {') {
+        output.puts("getInput() = _input;")
       }
       output.puts('}')
     }

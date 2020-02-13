@@ -40,6 +40,9 @@ class Parser {
     }
   };
 
+ private:
+  Input input_;
+
  public:
   std::any eval(const std::any& value) {
     if(value.type() == typeid(std::shared_ptr<List>)) {
@@ -97,6 +100,10 @@ class Parser {
   Parser() = default;
   virtual ~Parser() = default;
 
+  Input& getInput() {
+    return input_;
+  }
+
   bool append(List& list, const std::any& value) {
     if(value.has_value()) {
       list.push_back(value);
@@ -105,21 +112,21 @@ class Parser {
     return false;
   }
 
-  virtual std::any getToken(Input& input, const std::string& pattern) {
-    return skip(input) ? input.match(pattern) : std::any();
+  virtual std::any getToken(const std::string& pattern) {
+    return skip() ? getInput().match(pattern) : std::any();
   }
 
-  virtual std::any getToken(Input& input, const std::regex& pattern) {
-    return skip(input) ? input.match(pattern) : std::any();
+  virtual std::any getToken(const std::regex& pattern) {
+    return skip() ? getInput().match(pattern) : std::any();
   }
 
-  virtual bool skip(Input& input) {
+  virtual bool skip() {
     //return !input.isEnd();
     return true;
   }
 
-  virtual void error(const Input& input) {
-    throw Error(input.toString());
+  virtual void error() {
+    throw Error(getInput().toString());
   }
 
   std::any checkValue(const std::any& value) {
