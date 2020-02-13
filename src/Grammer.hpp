@@ -36,7 +36,7 @@ class Grammer : public lilyan::Parser {
          getToken(std::string(":")).has_value() &&
          (result->at(2) = semantics()).has_value() &&
          getToken(std::string(";")).has_value()) {
-        result->at(0) = Action("appendRule", static_cast<action_t>(&Grammer::appendRule));
+        result->at(0) = Action("appendRule", static_cast<Action::Func>(&Grammer::appendRule));
         return result;
       }
       else {
@@ -50,7 +50,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = semantic()).has_value()) {
-        result->at(0) = Action("onSemantics", static_cast<action_t>(&Grammer::onSemantics));
+        result->at(0) = Action("onSemantics", static_cast<Action::Func>(&Grammer::onSemantics));
         return semantics(result);
       }
       else {
@@ -65,7 +65,7 @@ class Grammer : public lilyan::Parser {
       auto result = std::make_shared<List>(3);
       if((result->at(1) = value).has_value() &&
          (result->at(2) = semantic()).has_value()) {
-        result->at(0) = Action("appendSemantics", static_cast<action_t>(&Grammer::appendSemantics));
+        result->at(0) = Action("appendSemantics", static_cast<Action::Func>(&Grammer::appendSemantics));
         return semantics(result);
       }
       else {
@@ -81,7 +81,7 @@ class Grammer : public lilyan::Parser {
       if((result->at(1) = tokens()).has_value() &&
          getToken(std::string("->")).has_value() &&
          (result->at(2) = action()).has_value()) {
-        result->at(0) = Action("onSemantic", static_cast<action_t>(&Grammer::onSemantic));
+        result->at(0) = Action("onSemantic", static_cast<Action::Func>(&Grammer::onSemantic));
         return result;
       }
       else {
@@ -95,7 +95,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = token()).has_value()) {
-        result->at(0) = Action("onTokens", static_cast<action_t>(&Grammer::onTokens));
+        result->at(0) = Action("onTokens", static_cast<Action::Func>(&Grammer::onTokens));
         return tokens(result);
       }
       else {
@@ -110,7 +110,7 @@ class Grammer : public lilyan::Parser {
       auto result = std::make_shared<List>(3);
       if((result->at(1) = value).has_value() &&
          (result->at(2) = token()).has_value()) {
-        result->at(0) = Action("appendTokens", static_cast<action_t>(&Grammer::appendTokens));
+        result->at(0) = Action("appendTokens", static_cast<Action::Func>(&Grammer::appendTokens));
         return tokens(result);
       }
       else {
@@ -124,7 +124,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = getToken(std::regex(R"(\w+)"))).has_value()) {
-        result->at(0) = Action("tokenRule", static_cast<action_t>(&Grammer::tokenRule));
+        result->at(0) = Action("tokenRule", static_cast<Action::Func>(&Grammer::tokenRule));
         return result;
       }
       else {
@@ -135,7 +135,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = getToken(std::string("''"))).has_value()) {
-        result->at(0) = Action("tokenString", static_cast<action_t>(&Grammer::tokenString));
+        result->at(0) = Action("tokenString", static_cast<Action::Func>(&Grammer::tokenString));
         return result;
       }
       else {
@@ -146,7 +146,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = getToken(std::string(""""))).has_value()) {
-        result->at(0) = Action("tokenString", static_cast<action_t>(&Grammer::tokenString));
+        result->at(0) = Action("tokenString", static_cast<Action::Func>(&Grammer::tokenString));
         return result;
       }
       else {
@@ -157,7 +157,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = getToken(std::string("//"))).has_value()) {
-        result->at(0) = Action("tokenRegexp", static_cast<action_t>(&Grammer::tokenRegexp));
+        result->at(0) = Action("tokenRegexp", static_cast<Action::Func>(&Grammer::tokenRegexp));
         return result;
       }
       else {
@@ -174,7 +174,7 @@ class Grammer : public lilyan::Parser {
          getToken(std::string("(")).has_value() &&
          (result->at(2) = args()).has_value() &&
          getToken(std::string(")")).has_value()) {
-        result->at(0) = Action("onActionRule", static_cast<action_t>(&Grammer::onActionRule));
+        result->at(0) = Action("onActionRule", static_cast<Action::Func>(&Grammer::onActionRule));
         return result;
       }
       else {
@@ -185,7 +185,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = arg()).has_value()) {
-        result->at(0) = Action("onActionArg", static_cast<action_t>(&Grammer::onActionArg));
+        result->at(0) = Action("onActionArg", static_cast<Action::Func>(&Grammer::onActionArg));
         return result;
       }
       else {
@@ -199,7 +199,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = arg()).has_value()) {
-        result->at(0) = Action("onArgs", static_cast<action_t>(&Grammer::onArgs));
+        result->at(0) = Action("onArgs", static_cast<Action::Func>(&Grammer::onArgs));
         return args(result);
       }
       else {
@@ -215,7 +215,7 @@ class Grammer : public lilyan::Parser {
       if((result->at(1) = value).has_value() &&
          getToken(std::string(",")).has_value() &&
          (result->at(2) = arg()).has_value()) {
-        result->at(0) = Action("appendArgs", static_cast<action_t>(&Grammer::appendArgs));
+        result->at(0) = Action("appendArgs", static_cast<Action::Func>(&Grammer::appendArgs));
         return args(result);
       }
       else {
@@ -229,7 +229,7 @@ class Grammer : public lilyan::Parser {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
       if((result->at(1) = getToken(std::regex(R"(\$\d+)"))).has_value()) {
-        result->at(0) = Action("onArg", static_cast<action_t>(&Grammer::onArg));
+        result->at(0) = Action("onArg", static_cast<Action::Func>(&Grammer::onArg));
         return result;
       }
       else {

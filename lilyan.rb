@@ -199,7 +199,7 @@ class Action
 
   def postmatch(output)
     if @name
-      output.puts("result->at(0) = Action(\"#{@name}\", static_cast<action_t>(&#{@parser.name}::#{@name}));")
+      output.puts("result->at(0) = Action(\"#{@name}\", static_cast<Action::Func>(&#{@parser.name}::#{@name}));")
     end
   end
 

@@ -3,6 +3,7 @@
 ***************************************************************************/
 #pragma once
 
+#include "lilyan/Error.hpp"
 #include "lilyan/Input.hpp"
 
 namespace lilyan {
@@ -12,32 +13,21 @@ namespace lilyan {
 class Parser {
  public:
   using List = std::vector<std::any>;
-  using action_t = std::any(Parser::*)(const List&);
 
   class Action {
    public:
-    const char* name;
-    action_t action;
+    using Func = std::any(Parser::*)(const List&);
 
    public:
-    Action(const char* name, action_t action)
+    const char* name;
+    Func func;
+
+   public:
+    Action(const char* name, Func func)
       : name(name), 
-        action(action)
+        func(func)
     {}
     Action(const Action& src) = default;
-  };
-
-  class Error {
-   private:
-    std::string message_;
-
-   public:
-    Error(const std::string& message) : message_(message) {}
-    ~Error() = default;
-
-    const std::string& getMessage() const {
-      return message_;
-    }
   };
 
  private:
@@ -51,7 +41,7 @@ class Parser {
         item = eval(item);
       }
       if(list->size() > 0 && list->at(0).type() == typeid(Action)) {
-        return (this->*(std::any_cast<Action>(list->at(0)).action))(*list);
+        return (this->*(std::any_cast<Action>(list->at(0)).func))(*list);
       }
     }
     return value;
