@@ -170,7 +170,8 @@ end
 
 #
 class Action
-  def initialize(name, args)
+  def initialize(parser, name, args)
+    @parser = parser
     @name = name
     @args = args
   end
@@ -198,7 +199,7 @@ class Action
 
   def postmatch(output)
     if @name
-      output.puts("result->at(0) = Action(\"#{@name}\", static_cast<action_t>(&Parser::#{@name}));")
+      output.puts("result->at(0) = Action(\"#{@name}\", static_cast<action_t>(&#{@parser.name}::#{@name}));")
     end
   end
 
@@ -243,14 +244,15 @@ class Parser
               end
             end
             if match = input.token('(\w+)\(\$(\d+)(?:\s*,\s*\$(\d+))*\)')
-              action = Action.new(match[1], 
-                              match[2...match.length].compact.collect { |n|
-                                Integer(n)
-                              })
+              action = Action.new(self, 
+                                  match[1], 
+                                  match[2...match.length].compact.collect { |n|
+                                    Integer(n)
+                                  })
               list.action = action
               @actions[action.name] = action
             elsif match = input.token('\$(\d+)')
-              list.action = Action.new(nil, [ Integer(match[1]) ])
+              list.action = Action.new(self, nil, [ Integer(match[1]) ])
             else
               raise "syntax error"
             end
@@ -275,8 +277,8 @@ class Parser
         rule.write(@output)
       }
       @output.puts("protected:", -1);
-      @output.puts("Parser() = default;")
-      @output.puts("virtual ~Parser() = default;")
+      @output.puts("#{@name}() = default;")
+      @output.puts("~#{@name}() override = default;")
       @actions.each_value { |action|
         @output.puts("virtual #{action.to_s} = 0;")
       }
@@ -290,7 +292,10 @@ parser = Parser.new
 
 option = OptionParser.new
 option.on('-c', '--class=NAME') { |v| parser.name = v }
-option.on('-o', '--output=FILE') { |v| parser.output = Output.new(File.open(v, 'w')) }
+option.on('-o', '--output=FILE') { |v|
+  parser.output = Output.new(File.open(v, 'w'))
+  parser.name = File.basename(v, '.*')
+}
 option.parse!(ARGV)
 
 ARGV.each { |src|

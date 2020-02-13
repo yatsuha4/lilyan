@@ -28,7 +28,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@$(MKDIR) $(dir $@)
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
-$(SRCDIR)/Parser.hpp: $(SRCDIR)/Parser.ll $(TOPDIR)/lilyan.rb
+$(SRCDIR)/Grammer.hpp: $(SRCDIR)/Grammer.ll $(TOPDIR)/lilyan.rb
 	$(RUBY) $(TOPDIR)/lilyan.rb -o $@ $<
 
 #
