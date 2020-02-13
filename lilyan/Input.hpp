@@ -9,17 +9,26 @@ namespace lilyan {
 ***************************************************************************/
 class Input {
  private:
-  std::reference_wrapper<const std::string> text_;
+  std::shared_ptr<const std::string> name_;
+  std::shared_ptr<const std::string> text_;
   size_t pos_;
   size_t x_;
   size_t y_;
 
  public:
-  Input(const std::string& text)
-    : text_(text), 
+  Input(const std::string& name, 
+        const std::shared_ptr<const std::string>& text)
+    : name_(std::make_shared<std::string>(name)), 
+      text_(text), 
       pos_(0), 
       x_(0), 
       y_(0)
+  {}
+  Input(const std::string& name)
+    : Input(name, Read(name))
+  {}
+  Input(const std::string& name, const std::string& text)
+    : Input(name, std::make_shared<std::string>(text))
   {}
   Input(const Input& src) = default;
   ~Input() = default;
@@ -27,7 +36,7 @@ class Input {
   //Input& operator=(const Input& src) = default;
 
   std::any match(const std::string& string) {
-    if(std::equal(string.begin(), string.end(), text_.get().begin() + pos_)) {
+    if(std::equal(string.begin(), string.end(), text_->begin() + pos_)) {
       seek(pos_ + string.length());
       return std::any(string);
     }
@@ -36,7 +45,7 @@ class Input {
 
   std::any match(const std::regex& pattern) {
     std::smatch m;
-    if(std::regex_search(text_.get().cbegin() + pos_, text_.get().cend(), 
+    if(std::regex_search(text_->begin() + pos_, text_->end(), 
                          m, pattern, 
                          std::regex_constants::match_continuous)) {
       seek(pos_ + m[0].second - m[0].first);
@@ -46,9 +55,9 @@ class Input {
   }
 
   void seek(size_t pos) {
-    assert(pos >= pos_ && pos <= text_.get().size());
+    assert(pos >= pos_ && pos <= text_->size());
     for(auto i = pos_; i < pos; i++) {
-      if(text_.get()[i] == '\n') {
+      if(text_->at(i) == '\n') {
         x_ = 0;
         y_++;
       }
@@ -60,13 +69,23 @@ class Input {
   }
 
   bool isEnd() const {
-    return pos_ >= text_.get().size();
+    return pos_ >= text_->size();
   }
 
   std::string toString() const {
     std::ostringstream stream;
     stream << y_ << ":" << x_;
     return stream.str();
+  }
+
+  static std::shared_ptr<std::string> Read(const std::string& name) {
+    std::ifstream stream(name);
+    if(!stream.fail()) {
+      return std::make_shared<std::string>
+        (std::istreambuf_iterator<char>(stream), 
+         std::istreambuf_iterator<char>());
+    }
+    return nullptr;
   }
 };
 /***********************************************************************//**

@@ -4,7 +4,6 @@
 #pragma once
 
 #include "lilyan/Input.hpp"
-#include "lilyan/Semantic.hpp"
 
 namespace lilyan {
 /***********************************************************************//**
@@ -13,19 +12,19 @@ namespace lilyan {
 class Parser {
  public:
   using List = std::vector<std::any>;
-  using func_t = std::any(Parser::*)(const List&);
+  using action_t = std::any(Parser::*)(const List&);
 
-  class Func {
+  class Action {
    public:
     const char* name;
-    func_t func;
+    action_t action;
 
    public:
-    Func(const char* name, func_t func)
+    Action(const char* name, action_t action)
       : name(name), 
-        func(func)
+        action(action)
     {}
-    Func(const Func& src) = default;
+    Action(const Action& src) = default;
   };
 
   class Error {
@@ -41,14 +40,15 @@ class Parser {
     }
   };
 
+ public:
   std::any eval(const std::any& value) {
     if(value.type() == typeid(std::shared_ptr<List>)) {
       auto list = std::any_cast<std::shared_ptr<List>>(value);
       for(auto& item : *list) {
         item = eval(item);
       }
-      if(list->size() > 0 && list->at(0).type() == typeid(Func)) {
-        return (this->*(std::any_cast<Func>(list->at(0)).func))(*list);
+      if(list->size() > 0 && list->at(0).type() == typeid(Action)) {
+        return (this->*(std::any_cast<Action>(list->at(0)).action))(*list);
       }
     }
     return value;
@@ -87,8 +87,8 @@ class Parser {
       stream << "'" << std::any_cast<std::string>(value) << "'";
       return stream.str();
     }
-    else if(value.type() == typeid(Func)) {
-      return std::string(std::any_cast<Func>(value).name);
+    else if(value.type() == typeid(Action)) {
+      return std::string(std::any_cast<Action>(value).name);
     }
     return std::string("?");
   }
@@ -97,16 +97,20 @@ class Parser {
   Parser() = default;
   virtual ~Parser() = default;
 
-  bool append(Semantic& semantic, Input& input, const std::any& value) {
-    return skip(input) && semantic.append(value);
-  }
-
   bool append(List& list, const std::any& value) {
     if(value.has_value()) {
       list.push_back(value);
       return true;
     }
     return false;
+  }
+
+  virtual std::any getToken(Input& input, const std::string& pattern) {
+    return skip(input) ? input.match(pattern) : std::any();
+  }
+
+  virtual std::any getToken(Input& input, const std::regex& pattern) {
+    return skip(input) ? input.match(pattern) : std::any();
   }
 
   virtual bool skip(Input& input) {

@@ -22,6 +22,10 @@ class Input
     skip
     return @buff.empty?
   end
+
+  def to_s
+    return @buff[0, 40]
+  end
 end
 
 #
@@ -50,12 +54,20 @@ end
 
 #
 class Rule
-  def initialize(name)
+  @@rules = Hash.new
+
+  def initialize(name, prefix)
     @name = name
+    @prefix = prefix
     @list = Array.new
     @recursion = Array.new
+    @@rules[name] = self
   end
   attr_reader :name
+
+  def self.[](name)
+    return @@rules[name]
+  end
 
   def append(list)
     if list.recursion?(@name)
@@ -70,7 +82,7 @@ class Rule
   end
 
   def write(output)
-    output.puts("std::any #{@name.to_s}(lilyan::Input& input) {") {
+    output.puts("std::any #{self}(lilyan::Input& input) {") {
       @list.each { |list|
         list.write(output, self)
       }
@@ -79,7 +91,7 @@ class Rule
     output.puts("}")
 
     unless @recursion.empty?
-      output.puts("std::any #{@name.to_s}(lilyan::Input& input, const std::any& value) {") {
+      output.puts("std::any #{self}(lilyan::Input& input, const std::any& value) {") {
         @recursion.each { |list|
           list.write(output, self)
         }
@@ -91,10 +103,14 @@ class Rule
 
   def puts_return(output, value)
     if recursion?
-      output.puts("return #{@name.to_s}(input, #{value});")
+      output.puts("return #{self}(input, #{value});")
     else
       output.puts("return #{value};")
     end
+  end
+
+  def to_s
+    return "#{@prefix}#{@name.to_s}"
   end
 end
 
@@ -102,10 +118,10 @@ end
 class List
   def initialize
     @terms = Array.new
-    @func = nil
+    @action = nil
   end
   attr_reader :terms
-  attr_accessor :func
+  attr_accessor :action
 
   def recursion?(rule)
     return @terms.include?(rule)
@@ -114,7 +130,7 @@ class List
   def write(output, rule)
     output.puts("{") {
       output.puts("lilyan::Input _input(input);")
-      @func.prematch(output)
+      @action.prematch(output)
       text = ''
       @terms.each_with_index { |item, i|
         if text.empty?
@@ -124,23 +140,22 @@ class List
           output.puts(text)
           text = '   '
         end
-        text << 'skip(_input) && '
         cond = case item
                when Symbol
                  if item == rule.name
                    'value'
                  else
-                   "#{item.to_s}(_input)"
+                   (Rule[item] || raise('no such rule')).to_s + "(_input)"
                  end
                when String
-                 "_input.match(std::string(\"#{item}\"))"
+                 "getToken(_input, std::string(\"#{item}\"))"
                when Regexp
-                 "_input.match(std::regex(R\"(#{item.source})\"))"
+                 "getToken(_input, std::regex(R\"(#{item.source})\"))"
                end
-        text << @func.match(i, cond) << ".has_value()";
+        text << @action.match(i, cond) << ".has_value()";
       }
       output.puts(text + ') {') {
-        @func.postmatch(output)
+        @action.postmatch(output)
         output.puts("input = _input;")
         rule.puts_return(output, "result")
       }
@@ -151,7 +166,7 @@ class List
 end
 
 #
-class Func
+class Action
   def initialize(name, args)
     @name = name
     @args = args
@@ -180,7 +195,7 @@ class Func
 
   def postmatch(output)
     if @name
-      output.puts("result->at(0) = Func(\"#{@name}\", static_cast<func_t>(&Parser::#{@name}));")
+      output.puts("result->at(0) = Action(\"#{@name}\", static_cast<action_t>(&Parser::#{@name}));")
     end
   end
 
@@ -195,9 +210,10 @@ class Parser
 
   def initialize
     @name = 'Parser'
+    @rule_prefix = ''
     @output = Output.new(STDOUT)
     @rules = Hash.new
-    @funcs = Hash.new
+    @actions = Hash.new
   end
   attr_accessor :name
   attr_accessor :output
@@ -205,40 +221,45 @@ class Parser
   def parse(src)
     input = Input.new(src)
     while(!input.end?)
-      if match = input.token('(\w+)\s*:')
-        rule = Rule.new(match[1].to_sym)
-        while(!input.token(';'))
-          list = List.new
-          while(!input.token('->'))
-            if match = input.token('(\w+)')
-              list.terms.push(match[1].to_sym)
-            elsif match = input.token('\'(.+?)\'')
-              list.terms.push(match[1])
-            elsif match = input.token('\"(.+?)\"')
-              list.terms.push(Regexp.new(match[1]))
-            elsif match = input.token('\/(.+?)\/')
-              list.terms.push(Regexp.new(match[1]))
+      begin
+        if match = input.token('(\w+)\s*:')
+          rule = Rule.new(match[1].to_sym, @rule_prefix)
+          while(!input.token(';'))
+            list = List.new
+            while(!input.token('->'))
+              if match = input.token('(\w+)')
+                list.terms.push(match[1].to_sym)
+              elsif match = input.token('\'(.+?)\'')
+                list.terms.push(match[1])
+              elsif match = input.token('\"(.+?)\"')
+                list.terms.push(match[1])
+              elsif match = input.token('\/(.+?)\/')
+                list.terms.push(Regexp.new(match[1]))
+              else
+                raise "syntax error"
+              end
+            end
+            if match = input.token('(\w+)\(\$(\d+)(?:\s*,\s*\$(\d+))*\)')
+              action = Action.new(match[1], 
+                              match[2...match.length].compact.collect { |n|
+                                Integer(n)
+                              })
+              list.action = action
+              @actions[action.name] = action
+            elsif match = input.token('\$(\d+)')
+              list.action = Action.new(nil, [ Integer(match[1]) ])
             else
               raise "syntax error"
             end
+            rule.append(list)
           end
-          if match = input.token('(\w+)\(\$(\d+)(?:\s*,\s*\$(\d+))*\)')
-            func = Func.new(match[1], 
-                            match[2...match.length].compact.collect { |n|
-                              Integer(n)
-                            })
-            list.func = func
-            @funcs[func.name] = func
-          elsif match = input.token('\$(\d+)')
-            list.func = Func.new(nil, [ Integer(match[1]) ])
-          else
-            raise "syntax error"
-          end
-          rule.append(list)
+          @rules[rule.name] = rule
+        else
+          raise "syntax error"
         end
-        @rules[rule.name] = rule
-      else
-        raise "syntax error"
+      rescue => e
+        puts(input.to_s)
+        raise(e)
       end
     end
   end
@@ -253,8 +274,8 @@ class Parser
       @output.puts("protected:", -1);
       @output.puts("Parser() = default;")
       @output.puts("virtual ~Parser() = default;")
-      @funcs.each_value { |func|
-        @output.puts("virtual #{func.to_s} = 0;")
+      @actions.each_value { |action|
+        @output.puts("virtual #{action.to_s} = 0;")
       }
     }
     @output.puts("};")

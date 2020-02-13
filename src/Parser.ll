@@ -1,50 +1,43 @@
-syntax:
-  rule		-> $1
-  syntax rule	-> appendRule($2)
+rules:
+  rule -> $1
+  rules rule -> $1
   ;
 
 rule:
-  name ':' expr ';' -> null
+  /\w+/ ':' semantics ';' -> appendRule($1, $3)
   ;
 
-expr:
-  cond		->
-  expr '|' cond	-> 
+semantics:
+  semantic -> onSemantics($1)
+  semantics semantic -> appendSemantics($1, $2)
   ;
 
-cond:
-  list '->' func	->
-  '->' func		->
+semantic:
+  tokens '->' action -> onSemantic($1, $3)
   ;
 
-list
-  : term
-  | list term
+tokens:
+  token -> onTokens($1)
+  tokens token -> appendTokens($1, $2)
   ;
 
-term
-  : /\w+/		-> termRule($1)
-  | "'" /.*/ "'"	-> termString($2)
-  | '"' /.*/ '"'	-> termString($2)
-  | /(?<!\\)\/.*?(?<!\\)\//	-> termRegexp($1)
+token:
+  /\w+/ -> tokenRule($1)
+  "''" -> tokenString($1)
+  '""' -> tokenString($1)
+  '//' -> tokenRegexp($1)
   ;
 
-func
-  : /\w+/ '(' args ')'	-> func($1, $3)
-  | arg			-> func($1)
-  |			-> funcNull()
+action:
+  /\w+/ '(' args ')' -> onActionRule($1, $3)
+  arg -> onActionArg($1)
   ;
 
-args
-  : arg			-> onArgs($1)
-  | args ',' arg	-> appendArgs($1, $3)
+args:
+  arg -> onArgs($1)
+  args ',' arg -> appendArgs($1, $3)
   ;
 
-arg
-  : /\$\d+/		-> onArg($1)
-  ;
-
-comment
-  : '//' /.*?$/		->
-  | '/*' /.*?/ '*/'	->
+arg:
+  /\$\d+/ -> onArg($1)
   ;
