@@ -1,2 +1,7 @@
 obj/
 bin/
+
+# Xcode
+/build/xcode/**/DerivedData/
+/build/xcode/**/xcshareddata/
+/build/xcode/**/xcuserdata/

@@ -148,6 +148,7 @@ class List
                    (Rule[item] || raise('no such rule')).to_s + "()"
                  end
                when String
+                 item.gsub!(/\"/, '\"')
                  "getToken(std::string(\"#{item}\"))"
                when Regexp
                  "getToken(std::regex(R\"(#{item.source})\"))"

@@ -14,6 +14,8 @@ class Parser
   Parser() = default;
   ~Parser() override = default;
 
+  void parse(const std::string& file);
+
  protected:
   std::any appendRule(const List& args) override;
   std::any onSemantics(const List& args) override;

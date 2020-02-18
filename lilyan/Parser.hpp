@@ -86,6 +86,10 @@ class Parser {
     return std::string("?");
   }
 
+  virtual void error(const std::string& message) {
+    throw Error((std::ostringstream() << message << " at " << getInput().toString()).str());
+  }
+
  protected:
   Parser() = default;
   virtual ~Parser() = default;
@@ -113,10 +117,6 @@ class Parser {
   virtual bool skip() {
     //return !input.isEnd();
     return true;
-  }
-
-  virtual void error() {
-    throw Error(getInput().toString());
   }
 
   std::any checkValue(const std::any& value) {

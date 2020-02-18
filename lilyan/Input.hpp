@@ -26,14 +26,16 @@ class Input {
 
   //Input& operator=(const Input& src) = default;
 
-  void read(const std::string& name) {
+  bool read(const std::string& name) {
     std::ifstream stream(name);
     if(!stream.fail()) {
       set(name, 
           std::make_shared<std::string>
           (std::istreambuf_iterator<char>(stream), 
            std::istreambuf_iterator<char>()));
+      return true;
     }
+    return false;
   }
 
   void set(const std::string& name, 

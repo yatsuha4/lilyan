@@ -145,7 +145,7 @@ class Grammer : public lilyan::Parser {
     {
       lilyan::Input _input(getInput());
       auto result = std::make_shared<List>(2);
-      if((result->at(1) = getToken(std::string(""""))).has_value()) {
+      if((result->at(1) = getToken(std::string("\"\""))).has_value()) {
         result->at(0) = Action("tokenString", static_cast<Action::Func>(&Grammer::tokenString));
         return result;
       }
