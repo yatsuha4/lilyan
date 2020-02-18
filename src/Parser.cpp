@@ -18,6 +18,37 @@ void Parser::parse(const std::string& file) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
+std::any Parser::onGetToken(const std::string& pattern) {
+  if(pattern == "''") {
+    return getInput().getString("'", "'");
+  }
+  else if(pattern == "\"\"") {
+    return getInput().getString("\"", "\"");
+  }
+  else if(pattern == "//") {
+    return getInput().getString("/", "/");
+  }
+  return super::onGetToken(pattern);
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+std::any Parser::onRules(const List& args) {
+  auto list = std::make_shared<List>();
+  list->push_back(args[1]);
+  return list;
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+std::any Parser::appendRules(const List& args) {
+  auto list = std::make_shared<List>(*std::any_cast<std::shared_ptr<List>>(args[1]));
+  list->push_back(args[2]);
+  return list;
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
 std::any Parser::appendRule(const List& args) {
   return std::any();
 }

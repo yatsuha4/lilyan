@@ -130,6 +130,7 @@ class List
   def write(output, rule)
     output.puts("{") {
       output.puts("lilyan::Input _input(getInput());")
+      output.puts("std::cerr << _input.toString() << std::endl;")
       @action.prematch(output)
       text = ''
       @terms.each_with_index { |item, i|

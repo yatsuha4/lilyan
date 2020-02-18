@@ -10,6 +10,8 @@
 class Parser
   : public Grammer
 {
+  using super = Grammer;
+
  public:
   Parser() = default;
   ~Parser() override = default;
@@ -17,6 +19,10 @@ class Parser
   void parse(const std::string& file);
 
  protected:
+  std::any onGetToken(const std::string& pattern) override;
+
+  std::any onRules(const List& args) override;
+  std::any appendRules(const List& args) override;
   std::any appendRule(const List& args) override;
   std::any onSemantics(const List& args) override;
   std::any appendSemantics(const List& args) override;

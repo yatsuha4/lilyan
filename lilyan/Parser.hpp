@@ -107,15 +107,32 @@ class Parser {
   }
 
   virtual std::any getToken(const std::string& pattern) {
-    return skip() ? getInput().match(pattern) : std::any();
+    return skip() ? onGetToken(pattern) : std::any();
+  }
+
+  virtual std::any onGetToken(const std::string& pattern) {
+    return getInput().match(pattern);
   }
 
   virtual std::any getToken(const std::regex& pattern) {
-    return skip() ? getInput().match(pattern) : std::any();
+    return skip() ? onGetToken(pattern) : std::any();
+  }
+
+  virtual std::any onGetToken(const std::regex& pattern) {
+    return getInput().match(pattern);
   }
 
   virtual bool skip() {
-    //return !input.isEnd();
+    for(size_t i = 0;; i++) {
+      auto c = input_.fetch(i);
+      if(c == '\0') {
+        return false;
+      }
+      else if(c < '\0' || c > ' ') {
+        input_.seek(i);
+        break;
+      }
+    }
     return true;
   }
 
