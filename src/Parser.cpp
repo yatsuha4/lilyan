@@ -12,7 +12,9 @@ void Parser::parse(const std::string& file) {
     dump(std::cout, result);
   }
   else {
-    error((std::ostringstream() << "read error, '" << file << "'").str());
+    std::ostringstream stream;
+    stream << "read error, '" << file << "'";
+    error(stream.str());
   }
 }
 /***********************************************************************//**

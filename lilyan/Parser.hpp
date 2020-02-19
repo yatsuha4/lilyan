@@ -87,7 +87,9 @@ class Parser {
   }
 
   virtual void error(const std::string& message) {
-    throw Error((std::ostringstream() << message << " at " << getInput().toString()).str());
+    std::ostringstream stream;
+    stream << message << " at " << getInput().toString();
+    throw Error(stream.str());
   }
 
  protected:
