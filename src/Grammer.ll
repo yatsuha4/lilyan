@@ -4,7 +4,7 @@ rules:
   ;
 
 rule:
-  /\w+/ ':' semantics ';' -> appendRule($1, $3)
+  /\w+/ ':' semantics ';' -> onRule($1, $3)
   ;
 
 semantics:
@@ -39,5 +39,5 @@ args:
   ;
 
 arg:
-  /\$\d+/ -> onArg($1)
+  /\$(\d+)/ -> onArg($1)
   ;

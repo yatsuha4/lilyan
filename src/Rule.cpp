@@ -1,23 +1,24 @@
 ﻿/***********************************************************************//**
 	@file
 ***************************************************************************/
-#pragma once
+#include "Rule.hpp"
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-#include <any>
-#include <cassert>
-#include <fstream>
-#include <regex>
-#include <sstream>
-#include <string>
-#include <vector>
-
-namespace lilyan {
-using List = std::vector<std::any>;
+Rule::Rule(const std::string& name, 
+           const std::shared_ptr<Semantics>& semantics)
+  : name_(name), 
+    semantics_(semantics)
+{
 }
-
-#include "lilyan/Parser.hpp"
 /***********************************************************************//**
-	$Id$
+	@brief 
 ***************************************************************************/
+std::string Rule::toString() const {
+  std::ostringstream stream;
+  stream << name_ << ":" << std::endl;
+  for(auto& semantic : *semantics_) {
+    stream << "  " << semantic->toString() << std::endl;
+  }
+  return stream.str();
+}

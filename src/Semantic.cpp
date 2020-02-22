@@ -1,23 +1,21 @@
 ﻿/***********************************************************************//**
 	@file
 ***************************************************************************/
-#pragma once
+#include "Semantic.hpp"
+/***********************************************************************//**
+	@brief コンストラクタ
+***************************************************************************/
+Semantic::Semantic(const std::shared_ptr<Tokens>& tokens, 
+                   const std::shared_ptr<Action>& action)
+  : tokens_(tokens), 
+    action_(action)
+{
+}
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-#include <any>
-#include <cassert>
-#include <fstream>
-#include <regex>
-#include <sstream>
-#include <string>
-#include <vector>
-
-namespace lilyan {
-using List = std::vector<std::any>;
+std::string Semantic::toString() const {
+  std::ostringstream stream;
+  stream << tokens_->toString() << " -> " << action_->toString();
+  return stream.str();
 }
-
-#include "lilyan/Parser.hpp"
-/***********************************************************************//**
-	$Id$
-***************************************************************************/

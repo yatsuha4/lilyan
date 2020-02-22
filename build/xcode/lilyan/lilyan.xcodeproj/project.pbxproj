@@ -10,6 +10,10 @@
 		2677673823FC294400C3CC71 /* Grammer.ll in Sources */ = {isa = PBXBuildFile; fileRef = 2677673323FC294400C3CC71 /* Grammer.ll */; };
 		2677673923FC294400C3CC71 /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677673623FC294400C3CC71 /* Parser.cpp */; };
 		2677673A23FC294400C3CC71 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677673723FC294400C3CC71 /* main.cpp */; };
+		267767422401380400C3CC71 /* Semantic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677673E2401380400C3CC71 /* Semantic.cpp */; };
+		2677674524016FEA00C3CC71 /* Action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677674424016FEA00C3CC71 /* Action.cpp */; };
+		2677674724018BB300C3CC71 /* Rule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677674624018BB300C3CC71 /* Rule.cpp */; };
+		267767492401B58000C3CC71 /* Token.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 267767482401B58000C3CC71 /* Token.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -48,6 +52,15 @@
 		2677673523FC294400C3CC71 /* Grammer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Grammer.hpp; sourceTree = "<group>"; };
 		2677673623FC294400C3CC71 /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Parser.cpp; sourceTree = "<group>"; };
 		2677673723FC294400C3CC71 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		2677673D2401380400C3CC71 /* Rule.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Rule.hpp; sourceTree = "<group>"; };
+		2677673E2401380400C3CC71 /* Semantic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Semantic.cpp; sourceTree = "<group>"; };
+		2677673F2401380400C3CC71 /* Semantic.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Semantic.hpp; sourceTree = "<group>"; };
+		267767402401380400C3CC71 /* Token.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Token.hpp; sourceTree = "<group>"; };
+		267767412401380400C3CC71 /* Action.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Action.hpp; sourceTree = "<group>"; };
+		2677674324016FEA00C3CC71 /* stdafx.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stdafx.hpp; sourceTree = "<group>"; };
+		2677674424016FEA00C3CC71 /* Action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Action.cpp; sourceTree = "<group>"; };
+		2677674624018BB300C3CC71 /* Rule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rule.cpp; sourceTree = "<group>"; };
+		267767482401B58000C3CC71 /* Token.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Token.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,11 +93,20 @@
 		2677673223FC294400C3CC71 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				2677673323FC294400C3CC71 /* Grammer.ll */,
-				2677673423FC294400C3CC71 /* Parser.hpp */,
+				2677674424016FEA00C3CC71 /* Action.cpp */,
+				267767412401380400C3CC71 /* Action.hpp */,
 				2677673523FC294400C3CC71 /* Grammer.hpp */,
-				2677673623FC294400C3CC71 /* Parser.cpp */,
+				2677673323FC294400C3CC71 /* Grammer.ll */,
 				2677673723FC294400C3CC71 /* main.cpp */,
+				2677673623FC294400C3CC71 /* Parser.cpp */,
+				2677673423FC294400C3CC71 /* Parser.hpp */,
+				2677674624018BB300C3CC71 /* Rule.cpp */,
+				2677673D2401380400C3CC71 /* Rule.hpp */,
+				2677673E2401380400C3CC71 /* Semantic.cpp */,
+				2677673F2401380400C3CC71 /* Semantic.hpp */,
+				2677674324016FEA00C3CC71 /* stdafx.hpp */,
+				267767482401B58000C3CC71 /* Token.cpp */,
+				267767402401380400C3CC71 /* Token.hpp */,
 			);
 			name = src;
 			path = ../../../src;
@@ -149,8 +171,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				2677673923FC294400C3CC71 /* Parser.cpp in Sources */,
+				267767422401380400C3CC71 /* Semantic.cpp in Sources */,
 				2677673823FC294400C3CC71 /* Grammer.ll in Sources */,
+				267767492401B58000C3CC71 /* Token.cpp in Sources */,
+				2677674724018BB300C3CC71 /* Rule.cpp in Sources */,
 				2677673A23FC294400C3CC71 /* main.cpp in Sources */,
+				2677674524016FEA00C3CC71 /* Action.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,6 +223,8 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/../../../src/stdafx.hpp";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -254,6 +282,8 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/../../../src/stdafx.hpp";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

@@ -130,7 +130,7 @@ class List
   def write(output, rule)
     output.puts("{") {
       output.puts("lilyan::Input _input(getInput());")
-      output.puts("std::cerr << _input.toString() << std::endl;")
+      #output.puts("std::cerr << _input.toString() << std::endl;")
       @action.prematch(output)
       text = ''
       @terms.each_with_index { |item, i|
@@ -182,7 +182,7 @@ class Action
 
   def prematch(output)
     if @name
-      output.puts("auto result = std::make_shared<List>(#{@args.size + 1});")
+      output.puts("auto result = std::make_shared<lilyan::List>(#{@args.size + 1});")
     else
       output.puts("std::any result;")
     end
@@ -201,12 +201,12 @@ class Action
 
   def postmatch(output)
     if @name
-      output.puts("result->at(0) = Action(\"#{@name}\", static_cast<Action::Func>(&#{@parser.name}::#{@name}));")
+      output.puts("result->at(0) = lilyan::Action(\"#{@name}\", static_cast<lilyan::Action::Func>(&#{@parser.name}::#{@name}));")
     end
   end
 
   def to_s
-    return "std::any #{@name}(const List& args)"
+    return "std::any #{@name}(const lilyan::List& args)"
   end
 end
 

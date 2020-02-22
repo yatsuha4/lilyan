@@ -3,6 +3,7 @@
 ***************************************************************************/
 #pragma once
 
+#include "lilyan/Action.hpp"
 #include "lilyan/Error.hpp"
 #include "lilyan/Input.hpp"
 
@@ -11,25 +12,6 @@ namespace lilyan {
 	@brief 
 ***************************************************************************/
 class Parser {
- public:
-  using List = std::vector<std::any>;
-
-  class Action {
-   public:
-    using Func = std::any(Parser::*)(const List&);
-
-   public:
-    const char* name;
-    Func func;
-
-   public:
-    Action(const char* name, Func func)
-      : name(name), 
-        func(func)
-    {}
-    Action(const Action& src) = default;
-  };
-
  private:
   Input input_;
 

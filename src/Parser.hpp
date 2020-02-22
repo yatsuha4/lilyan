@@ -4,6 +4,8 @@
 #pragma once
 
 #include "Grammer.hpp"
+#include "Token.hpp"
+#include "Semantic.hpp"
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
@@ -21,23 +23,20 @@ class Parser
  protected:
   std::any onGetToken(const std::string& pattern) override;
 
-  std::any onRules(const List& args) override;
-  std::any appendRules(const List& args) override;
-  std::any appendRule(const List& args) override;
-  std::any onSemantics(const List& args) override;
-  std::any appendSemantics(const List& args) override;
-  std::any onSemantic(const List& args) override;
-  std::any onTokens(const List& args) override;
-  std::any appendTokens(const List& args) override;
-  std::any tokenRule(const List& args) override;
-  std::any tokenString(const List& args) override;
-  std::any tokenRegexp(const List& args) override;
-  std::any onActionRule(const List& args) override;
-  std::any onActionArg(const List& args) override;
-  std::any onArgs(const List& args) override;
-  std::any appendArgs(const List& args) override;
-  std::any onArg(const List& args) override;
+  std::any onRules(const lilyan::List& args) override;
+  std::any appendRules(const lilyan::List& args) override;
+  std::any onRule(const lilyan::List& args) override;
+  std::any onSemantics(const lilyan::List& args) override;
+  std::any appendSemantics(const lilyan::List& args) override;
+  std::any onSemantic(const lilyan::List& args) override;
+  std::any onTokens(const lilyan::List& args) override;
+  std::any appendTokens(const lilyan::List& args) override;
+  std::any tokenRule(const lilyan::List& args) override;
+  std::any tokenString(const lilyan::List& args) override;
+  std::any tokenRegexp(const lilyan::List& args) override;
+  std::any onActionRule(const lilyan::List& args) override;
+  std::any onActionArg(const lilyan::List& args) override;
+  std::any onArgs(const lilyan::List& args) override;
+  std::any appendArgs(const lilyan::List& args) override;
+  std::any onArg(const lilyan::List& args) override;
 };
-/***********************************************************************//**
-	$Id$
-***************************************************************************/

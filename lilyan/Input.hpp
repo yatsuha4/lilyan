@@ -65,7 +65,8 @@ class Input {
                          m, pattern, 
                          std::regex_constants::match_continuous)) {
       seek(m[0].second - m[0].first);
-      return std::any(std::string(m[0].first, m[0].second));
+      //return std::any(std::string(m[0].first, m[0].second));
+      return std::any(m);
     }
     return std::any();
   }
