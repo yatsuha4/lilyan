@@ -193,8 +193,15 @@ void Parser::putCpp(const Rules& rules) {
   output_ << className_ << "() = default;" << '\n';
   output_ << "~" << className_ << "() override = default;" << '\n';
   for(auto& action : actions_) {
-    output_ << "virtual std::any " << action->getName()
-            << "(const lilyan::List& args) = 0;" << '\n';
+    output_ << "virtual std::any " << action->getName() << "(";
+    auto& args = action->getArgs();
+    for(auto iter = args.begin(); iter != args.end(); iter++) {
+      if(iter != args.begin()) {
+        output_ << ", ";
+      }
+      output_ << "const std::any&";
+    }
+    output_ << ") = 0;" << '\n';
   }
   output_ << '}' << ";" << '\n';
 }
