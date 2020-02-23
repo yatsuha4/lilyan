@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2677673823FC294400C3CC71 /* Grammer.ll in Sources */ = {isa = PBXBuildFile; fileRef = 2677673323FC294400C3CC71 /* Grammer.ll */; };
 		2677673923FC294400C3CC71 /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677673623FC294400C3CC71 /* Parser.cpp */; };
 		2677673A23FC294400C3CC71 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677673723FC294400C3CC71 /* main.cpp */; };
 		267767422401380400C3CC71 /* Semantic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677673E2401380400C3CC71 /* Semantic.cpp */; };
@@ -159,7 +158,6 @@
 			files = (
 				2677673923FC294400C3CC71 /* Parser.cpp in Sources */,
 				267767422401380400C3CC71 /* Semantic.cpp in Sources */,
-				2677673823FC294400C3CC71 /* Grammer.ll in Sources */,
 				267767492401B58000C3CC71 /* Token.cpp in Sources */,
 				2677674C2401D10900C3CC71 /* Output.cpp in Sources */,
 				2677674724018BB300C3CC71 /* Rule.cpp in Sources */,
