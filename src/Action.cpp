@@ -64,13 +64,18 @@ std::string Action::postmatch(Parser& parser) const {
   std::ostringstream stream;
   if(hasFunc()) {
     stream << "std::make_shared<lilyan::Action>(\"" << getName()
-           << "\", std::bind(&" 
-           << parser.getClassName() << "::" << getName()
-           << ", this";
-    for(size_t i = 0; i < args_.size(); i++) {
-      stream << ", _args.at(" << i << ")";
+           << "\", [this";
+    if(!args_.empty()) {
+      stream << ", _args";
     }
-    stream << "))";
+    stream << "]() { " << getName() << "(";
+    for(size_t i = 0; i < args_.size(); i++) {
+      if(i > 0) {
+        stream << ", ";
+      }
+      stream << "eval(_args.at(" << i << "))";
+    }
+    stream << ") })";
   }
   else {
     stream << "_args.at(0)";
