@@ -68,7 +68,7 @@ std::string Action::postmatch(Parser& parser) const {
     if(!args_.empty()) {
       stream << ", _args";
     }
-    stream << "]() { " << getName() << "(";
+    stream << "]() { return " << getName() << "(";
     for(size_t i = 0; i < args_.size(); i++) {
       if(i > 0) {
         stream << ", ";
