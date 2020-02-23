@@ -75,7 +75,7 @@ std::string Action::postmatch(Parser& parser) const {
       }
       stream << "eval(_args.at(" << i << "))";
     }
-    stream << ") })";
+    stream << "); })";
   }
   else {
     stream << "_args.at(0)";
