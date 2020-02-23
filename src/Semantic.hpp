@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Action.hpp"
+#include "Output.hpp"
 #include "Token.hpp"
 /***********************************************************************//**
 	@brief 
@@ -17,6 +18,9 @@ class Semantic {
   Semantic(const std::shared_ptr<Tokens>& tokens, 
            const std::shared_ptr<Action>& action);
   ~Semantic() = default;
+
+  bool isRecursive(const std::string& name) const;
+  void putCpp(Parser& output, const Rule& rule) const;
 
   std::string toString() const;
 };

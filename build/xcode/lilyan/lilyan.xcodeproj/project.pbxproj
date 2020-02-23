@@ -14,6 +14,7 @@
 		2677674524016FEA00C3CC71 /* Action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677674424016FEA00C3CC71 /* Action.cpp */; };
 		2677674724018BB300C3CC71 /* Rule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677674624018BB300C3CC71 /* Rule.cpp */; };
 		267767492401B58000C3CC71 /* Token.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 267767482401B58000C3CC71 /* Token.cpp */; };
+		2677674C2401D10900C3CC71 /* Output.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677674A2401D10900C3CC71 /* Output.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -61,6 +62,8 @@
 		2677674424016FEA00C3CC71 /* Action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Action.cpp; sourceTree = "<group>"; };
 		2677674624018BB300C3CC71 /* Rule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rule.cpp; sourceTree = "<group>"; };
 		267767482401B58000C3CC71 /* Token.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Token.cpp; sourceTree = "<group>"; };
+		2677674A2401D10900C3CC71 /* Output.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Output.cpp; sourceTree = "<group>"; };
+		2677674B2401D10900C3CC71 /* Output.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Output.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +101,8 @@
 				2677673523FC294400C3CC71 /* Grammer.hpp */,
 				2677673323FC294400C3CC71 /* Grammer.ll */,
 				2677673723FC294400C3CC71 /* main.cpp */,
+				2677674A2401D10900C3CC71 /* Output.cpp */,
+				2677674B2401D10900C3CC71 /* Output.hpp */,
 				2677673623FC294400C3CC71 /* Parser.cpp */,
 				2677673423FC294400C3CC71 /* Parser.hpp */,
 				2677674624018BB300C3CC71 /* Rule.cpp */,
@@ -174,6 +179,7 @@
 				267767422401380400C3CC71 /* Semantic.cpp in Sources */,
 				2677673823FC294400C3CC71 /* Grammer.ll in Sources */,
 				267767492401B58000C3CC71 /* Token.cpp in Sources */,
+				2677674C2401D10900C3CC71 /* Output.cpp in Sources */,
 				2677674724018BB300C3CC71 /* Rule.cpp in Sources */,
 				2677673A23FC294400C3CC71 /* main.cpp in Sources */,
 				2677674524016FEA00C3CC71 /* Action.cpp in Sources */,

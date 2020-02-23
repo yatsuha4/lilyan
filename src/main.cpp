@@ -6,13 +6,20 @@
 	@brief 
 ***************************************************************************/
 int main(int argc, const char** argv) {
+  Parser parser;
   optionparser::OptionParser option;
-  std::string output;
   try {
     option.
+      append('c', "class", "NAME", "クラス名を指定する", 
+             [&](const char* arg) {
+               parser.setClassName(arg);
+             }).
       append('o', "output", "FILE", "出力ファイルを指定する", 
              [&](const char* arg) {
-               output.assign(arg);
+               if(!parser.getOutput().open(arg)) {
+                 std::cerr << "can't open " << arg << std::endl;
+                 exit(-1);
+               }
              }).
       append('h', "help", nullptr, "このメッセージを表示する", 
              [&](const char*) {
@@ -25,7 +32,6 @@ int main(int argc, const char** argv) {
     std::cerr << e.message << std::endl;
     exit(-1);
   }
-  Parser parser;
   try {
     for(const char* file : option) {
       parser.parse(file);

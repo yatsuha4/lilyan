@@ -6,6 +6,7 @@
 #include "Grammer.hpp"
 #include "Token.hpp"
 #include "Semantic.hpp"
+#include "Output.hpp"
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
@@ -14,11 +15,30 @@ class Parser
 {
   using super = Grammer;
 
+ private:
+  std::string className_;
+  Output output_;
+  std::vector<std::shared_ptr<Action>> actions_;
+
  public:
-  Parser() = default;
+  Parser();
   ~Parser() override = default;
 
+  Parser& setClassName(const decltype(className_)& className) {
+    className_ = className;
+    return *this;
+  }
+
+  const auto& getClassName() const {
+    return className_;
+  }
+
+  auto& getOutput() {
+    return output_;
+  }
+
   void parse(const std::string& file);
+  void puts(const std::string& text);
 
  protected:
   std::any onGetToken(const std::string& pattern) override;
@@ -39,4 +59,7 @@ class Parser
   std::any onArgs(const lilyan::List& args) override;
   std::any appendArgs(const lilyan::List& args) override;
   std::any onArg(const lilyan::List& args) override;
+
+ private:
+  void putCpp(const Rules& rules);
 };

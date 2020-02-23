@@ -5,13 +5,22 @@
 #include "Parser.hpp"
 #include "Rule.hpp"
 /***********************************************************************//**
+	@brief コンストラクタ
+***************************************************************************/
+Parser::Parser()
+  : className_("Parser")
+{
+}
+/***********************************************************************//**
 	@brief 
 ***************************************************************************/
 void Parser::parse(const std::string& file) {
   if(getInput().read(file)) {
     auto result = rules();
-    dump(std::cout, result);
-    eval(result);
+    //dump(std::cout, result);
+    result = eval(result);
+    auto rules = std::any_cast<std::shared_ptr<Rules>>(result);
+    putCpp(*rules);
   }
   else {
     std::ostringstream stream;
@@ -58,7 +67,7 @@ std::any Parser::appendRules(const lilyan::List& args) {
 std::any Parser::onRule(const lilyan::List& args) {
   auto name = std::any_cast<std::smatch>(args[1])[0];
   auto semantics = std::any_cast<std::shared_ptr<Semantics>>(args[2]);
-  auto rule = std::make_shared<Rule>(name, semantics);
+  auto rule = std::make_shared<Rule>(name, *semantics);
   std::cout << rule->toString();
   return rule;
 }
@@ -131,8 +140,15 @@ std::any Parser::tokenRegexp(const lilyan::List& args) {
 	@brief 
 ***************************************************************************/
 std::any Parser::onActionRule(const lilyan::List& args) {
-  return std::make_shared<Action>(std::any_cast<std::smatch>(args[1])[0], 
-                                  std::any_cast<std::vector<int>>(args[2]));
+  auto action = std::make_shared<Action>(std::any_cast<std::smatch>(args[1])[0], 
+                                         std::any_cast<std::vector<int>>(args[2]));
+  if(std::find_if(actions_.begin(), actions_.end(), 
+                  [&](const std::shared_ptr<Action>& iter) {
+                    return iter->getName() == action->getName();
+                  }) == actions_.end()) {
+    actions_.push_back(action);
+  }
+  return action;
 }
 /***********************************************************************//**
 	@brief 
@@ -162,6 +178,25 @@ std::any Parser::appendArgs(const lilyan::List& args) {
 std::any Parser::onArg(const lilyan::List& args) {
   auto match = std::any_cast<std::smatch>(args[1]);
   return std::any(std::stoi(match[1]));
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+void Parser::putCpp(const Rules& rules) {
+  output_ << "#include \"lilyan/lilyan.hpp\"" << '\n';
+  output_ << "class " << className_ << " : public lilyan::Parser " << '{';
+  output_ << '-' << "public:" << '\n';
+  for(auto& rule : rules) {
+    rule->putCpp(*this);
+  }
+  output_ << '-' << "protected:" << '\n';
+  output_ << className_ << "() = default;" << '\n';
+  output_ << "~" << className_ << "() override = default;" << '\n';
+  for(auto& action : actions_) {
+    output_ << "virtual std::any " << action->getName()
+            << "(const lilyan::List& args) = 0;" << '\n';
+  }
+  output_ << '}' << ";" << '\n';
 }
 /***********************************************************************//**
 	$Id$

@@ -23,6 +23,7 @@ class Token {
   }
 
   virtual std::string toString() const;
+  virtual std::string toCpp(const ::Rule& rule) const = 0;
 };
 /***********************************************************************//**
 	@brief 
@@ -35,6 +36,7 @@ class Token::Regexp
   ~Regexp() override = default;
 
   std::string toString() const override;
+  std::string toCpp(const ::Rule& rule) const override;
 };
 /***********************************************************************//**
 	@brief 
@@ -47,6 +49,7 @@ class Token::Rule
   ~Rule() override = default;
 
   std::string toString() const override;
+  std::string toCpp(const ::Rule& rule) const override;
 };
 /***********************************************************************//**
 	@brief 
@@ -59,6 +62,7 @@ class Token::String
   ~String() override = default;
 
   std::string toString() const override;
+  std::string toCpp(const ::Rule& rule) const override;
 };
 /***********************************************************************//**
 	@brief 
@@ -71,6 +75,8 @@ class Tokens
  public:
   Tokens() = default;
   ~Tokens() = default;
+
+  bool isRecursive(const std::string& rule) const;
 
   std::string toString() const;
 };

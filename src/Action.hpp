@@ -25,6 +25,11 @@ class Action {
 
   std::string toString() const;
 
+  std::string prematch() const;
+  std::string match(size_t index, const std::string& value) const;
+  std::string postmatch(Parser& parser) const;
+
  private:
+  bool hasFunc() const;
   std::string argsToString() const;
 };
