@@ -23,8 +23,7 @@ class Parser {
         item = eval(item);
       }
       if(list->size() > 0 && list->at(0).type() == typeid(Action)) {
-        //return (this->*(std::any_cast<Action>(list->at(0)).func))(*list);
-        //return ->*(std::any_cast<Action>(list->at(0)).func))(*list);
+        return (this->*(std::any_cast<Action>(list->at(0)).func))(*list);
       }
     }
     return value;

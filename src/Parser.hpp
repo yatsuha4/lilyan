@@ -43,22 +43,22 @@ class Parser
  protected:
   std::any onGetToken(const std::string& pattern) override;
 
-  std::any onRules(std::any) override;
-  std::any appendRules(std::any, std::any) override;
-  std::any onRule(std::any, std::any) override;
-  std::any onSemantics(std::any) override;
-  std::any appendSemantics(std::any, std::any) override;
-  std::any onSemantic(std::any, std::any) override;
-  std::any onTokens(std::any) override;
-  std::any appendTokens(std::any, std::any) override;
-  std::any tokenRule(std::any) override;
-  std::any tokenString(std::any) override;
-  std::any tokenRegexp(std::any) override;
-  std::any onActionRule(std::any, std::any) override;
-  std::any onActionArg(std::any) override;
-  std::any onArgs(std::any) override;
-  std::any appendArgs(std::any, std::any) override;
-  std::any onArg(std::any) override;
+  std::any onRules(const lilyan::List& args) override;
+  std::any appendRules(const lilyan::List& args) override;
+  std::any onRule(const lilyan::List& args) override;
+  std::any onSemantics(const lilyan::List& args) override;
+  std::any appendSemantics(const lilyan::List& args) override;
+  std::any onSemantic(const lilyan::List& args) override;
+  std::any onTokens(const lilyan::List& args) override;
+  std::any appendTokens(const lilyan::List& args) override;
+  std::any tokenRule(const lilyan::List& args) override;
+  std::any tokenString(const lilyan::List& args) override;
+  std::any tokenRegexp(const lilyan::List& args) override;
+  std::any onActionRule(const lilyan::List& args) override;
+  std::any onActionArg(const lilyan::List& args) override;
+  std::any onArgs(const lilyan::List& args) override;
+  std::any appendArgs(const lilyan::List& args) override;
+  std::any onArg(const lilyan::List& args) override;
 
  private:
   void putCpp(const Rules& rules);

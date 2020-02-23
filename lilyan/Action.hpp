@@ -10,7 +10,7 @@ class Parser;
 ***************************************************************************/
 class Action {
  public:
-  using Func = std::function<std::any()>;
+  using Func = std::any(Parser::*)(const List&);
 
  public:
   const char* name;
