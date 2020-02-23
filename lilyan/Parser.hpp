@@ -17,14 +17,9 @@ class Parser {
 
  public:
   std::any eval(const std::any& value) {
-    if(value.type() == typeid(std::shared_ptr<List>)) {
-      auto list = std::any_cast<std::shared_ptr<List>>(value);
-      for(auto& item : *list) {
-        item = eval(item);
-      }
-      if(list->size() > 0 && list->at(0).type() == typeid(Action)) {
-        return (this->*(std::any_cast<Action>(list->at(0)).func))(*list);
-      }
+    if(value.type() == typeid(std::shared_ptr<Action>)) {
+      auto action = std::any_cast<std::shared_ptr<Action>>(value);
+      return action->func();
     }
     return value;
   }
