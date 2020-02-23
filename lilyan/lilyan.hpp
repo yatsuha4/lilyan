@@ -6,6 +6,7 @@
 	@brief 
 ***************************************************************************/
 #include <any>
+#include <array>
 #include <cassert>
 #include <fstream>
 #include <regex>

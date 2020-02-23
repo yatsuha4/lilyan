@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,23 +16,6 @@
 		267767492401B58000C3CC71 /* Token.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 267767482401B58000C3CC71 /* Token.cpp */; };
 		2677674C2401D10900C3CC71 /* Output.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2677674A2401D10900C3CC71 /* Output.cpp */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildRule section */
-		2677673C23FC2BDD00C3CC71 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*.ll";
-			fileType = pattern.proxy;
-			inputFiles = (
-			);
-			isEditable = 1;
-			outputFiles = (
-				"$(INPUT_FILE_DIR)/$(INPUT_FILE_BASE).hpp",
-			);
-			runOncePerArchitecture = 0;
-			script = "ruby $PROJECT_DIR/../../../lilyan.rb -o $INPUT_FILE_DIR/$INPUT_FILE_BASE.hpp $INPUT_FILE_DIR/$INPUT_FILE_NAME\n";
-		};
-/* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		2677672623FC292700C3CC71 /* CopyFiles */ = {
@@ -129,7 +112,6 @@
 				2677672623FC292700C3CC71 /* CopyFiles */,
 			);
 			buildRules = (
-				2677673C23FC2BDD00C3CC71 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);

@@ -34,12 +34,8 @@ std::string Action::toString() const {
 ***************************************************************************/
 std::string Action::prematch() const {
   std::ostringstream stream;
-  if(hasFunc()) {
-    stream << "auto result = std::make_shared<lilyan::List>("
-           << (args_.size() + 1) << ");";
-  }
-  else {
-    stream << "std::any result;";
+  if(!args_.empty()) {
+    stream << "std::array<std::any, " << args_.size() << "> _args;";
   }
   return stream.str();
 }
@@ -51,7 +47,7 @@ std::string Action::match(size_t index, const std::string& value) const {
   if(iter != args_.end()) {
     std::ostringstream stream;
     if(hasFunc()) {
-      stream << "(result->at(" << ((iter - args_.begin()) + 1) << ") = "
+      stream << "(_args.at(" << (iter - args_.begin()) << ") = "
              << value << ")";
     }
     else {
@@ -65,15 +61,21 @@ std::string Action::match(size_t index, const std::string& value) const {
 	@brief 
 ***************************************************************************/
 std::string Action::postmatch(Parser& parser) const {
+  std::ostringstream stream;
   if(hasFunc()) {
-    std::ostringstream stream;
-    stream << "result->at(0) = lilyan::Action(\"" << getName()
-           << "\", static_cast<lilyan::Action::Func>(&"
+    stream << "std::make_shared<lilyan::Action>(\"" << getName()
+           << "\", std::bind(&" 
            << parser.getClassName() << "::" << getName()
-           << "))";
-    return stream.str();
+           << ", this";
+    for(size_t i = 0; i < args_.size(); i++) {
+      stream << ", _args.at(" << i << ")";
+    }
+    stream << "))";
   }
-  return std::string();
+  else {
+    stream << "_args.at(0)";
+  }
+  return stream.str();
 }
 /***********************************************************************//**
 	@brief 

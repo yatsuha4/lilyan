@@ -25,7 +25,7 @@ class Rule {
   std::string toString() const;
 
   void putCpp(Parser& parser) const;
-  std::string getCppReturn(const std::string& value) const;
+  std::string getReturn(const std::string& value) const;
 
  private:
   bool hasRecursive() const;

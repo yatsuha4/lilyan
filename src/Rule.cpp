@@ -46,7 +46,7 @@ void Rule::putCpp(Parser& parser) const {
   for(auto& semantic : semantics_) {
     semantic->putCpp(parser, *this);
   }
-  output << getCppReturn("std::any()") << '\n';
+  output << "return " << getReturn("std::any()") << ";" << '\n';
   output << '}' << '\n';
   if(hasRecursive()) {
     output << "std::any " << name_ << "(const std::any& value) " << '{';
@@ -60,16 +60,14 @@ void Rule::putCpp(Parser& parser) const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::string Rule::getCppReturn(const std::string& value) const {
+std::string Rule::getReturn(const std::string& value) const {
   std::ostringstream stream;
-  stream << "return ";
   if(hasRecursive()) {
     stream << name_ << "(" << value << ")";
   }
   else {
     stream << value;
   }
-  stream << ";";
   return stream.str();
 }
 /***********************************************************************//**
