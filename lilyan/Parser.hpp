@@ -12,7 +12,7 @@ namespace lilyan {
 	@brief 
 ***************************************************************************/
 class Parser {
- private:
+ protected:
   struct Result {
     std::any value;
     Input input;
@@ -131,6 +131,7 @@ class Parser {
   }
 
   void setResult(Result& result, const std::any& value) {
+    assert(value.has_value());
     if(result.value.has_value()) {
       warning("conflict rule");
     }
