@@ -52,7 +52,7 @@ std::string Token::Rule::toCpp(const ::Rule& rule,
   std::ostringstream stream;
   if(rule.getName() == getValue()) {
     if(!arg.empty()) {
-      stream << "(" << arg << " = value, true)";
+      stream << "(static_cast<void>(" << arg << " = value), true)";
     }
     else {
       stream << "true";
