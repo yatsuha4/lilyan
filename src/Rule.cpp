@@ -47,17 +47,31 @@ void Rule::putCpp(Parser& parser) const {
   for(auto& semantic : semantics_) {
     semantic->putCpp(parser, *this);
   }
-  output << "return " << getReturn("applyMatch(match, result)") << ";" << '\n';
+  if(hasRecursive()) {
+    output << "if(applyMatch(match, result)) " << '{'
+           << name_ << "(*match.value, result);" << '\n'
+           << "return true;" << '\n'
+           << '}' << '\n'
+           << "return false;" << '\n';
+  }
+  else {
+    output << "return applyMatch(match, result);" << '\n';
+  }
   output << '}' << '\n';
   if(hasRecursive()) {
-    output << "bool " << name_ << "(const std::any& value, std::any* result = nullptr) " << '{';
+    output << "void " << name_ << "(const std::any& value, std::any* result = nullptr) " << '{';
     output << "Match match;" << '\n';
     for(auto& semantic : recursiveSemantics_) {
       semantic->putCpp(parser, *this);
     }
-    output << "return match.value"
-           << " ? " << getReturn("applyMatch(match, result)")
-           << " : true;" << '\n';
+    if(hasRecursive()) {
+      output << "if(applyMatch(match, result)) " << '{'
+             << name_ << "(*match.value, result);" << '\n'
+             << '}' << '\n';
+    }
+    else {
+      output << "applyMatch(match, result);" << '\n';
+    }
     output << '}' << '\n';
   }
 }
@@ -67,10 +81,11 @@ void Rule::putCpp(Parser& parser) const {
 std::string Rule::getReturn(const std::string& value) const {
   std::ostringstream stream;
   if(hasRecursive()) {
-    stream << name_ << "(" << value << ")";
+    //stream << name_ << "(" << value << ")";
+    stream << name_ << "(*match.value)";
   }
   else {
-    stream << value;
+    stream << "true";
   }
   return stream.str();
 }
