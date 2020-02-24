@@ -13,8 +13,8 @@ namespace lilyan {
 ***************************************************************************/
 class Parser {
  protected:
-  struct Result {
-    std::any value;
+  struct Match {
+    std::optional<std::any> value;
     Input input;
   };
 
@@ -95,16 +95,16 @@ class Parser {
     return false;
   }
 
-  virtual std::any getToken(const std::string& pattern) {
-    return skip() ? onGetToken(pattern) : std::any();
+  virtual bool getToken(const std::string& pattern, std::any* result = nullptr) {
+    return _getToken(pattern, result);
   }
 
   virtual std::any onGetToken(const std::string& pattern) {
     return getInput().match(pattern);
   }
 
-  virtual std::any getToken(const std::regex& pattern) {
-    return skip() ? onGetToken(pattern) : std::any();
+  virtual bool getToken(const std::regex& pattern, std::any* result = nullptr) {
+    return _getToken(pattern, result);
   }
 
   virtual std::any onGetToken(const std::regex& pattern) {
@@ -130,22 +130,25 @@ class Parser {
     return value;
   }
 
-  void setResult(Result& result, const std::any& value) {
-    assert(value.has_value());
-    if(result.value.has_value()) {
+  void setMatch(Match& match, const std::any& value) {
+    if(match.value) {
       warning("conflict rule");
     }
     else {
-      result.value = value;
-      result.input = getInput();
+      match.value = value;
+      match.input = getInput();
     }
   }
 
-  const std::any& applyResult(const Result& result) {
-    if(result.value.has_value()) {
-      getInput() = result.input;
+  bool applyMatch(const Match& match, std::any* result) {
+    if(match.value) {
+      if(result) {
+        *result = *match.value;
+      }
+      getInput() = match.input;
+      return true;
     }
-    return result.value;
+    return false;
   }
 
   const std::any repeatRule(Repeat repeat, std::function<std::any()> func) {
@@ -170,6 +173,21 @@ class Parser {
       break;
     }
     return std::any();
+  }
+
+ private:
+  template<class T>
+  bool _getToken(const T& pattern, std::any* result) {
+    if(skip()) {
+      auto value = onGetToken(pattern);
+      if(value.has_value()) {
+        if(result) {
+          *result = value;
+        }
+        return true;
+      }
+    }
+    return false;
   }
 };
 /***********************************************************************//**

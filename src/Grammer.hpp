@@ -1,206 +1,206 @@
 #include "lilyan/lilyan.hpp"
 class Grammer : public lilyan::Parser {
  public:
-  std::any rules() {
-    Result result;
+  bool rules(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = rule()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onRules", [this, _args]() { return onRules(eval(_args.at(0))); }));
+      if(rule(&_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onRules", [this, _args]() { return onRules(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
-    return rules(applyResult(result));
+    return rules(applyMatch(match, result));
   }
-  std::any rules(const std::any& value) {
-    Result result;
+  bool rules(const std::any& value, std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 2> _args;
-      if((_args.at(0) = value).has_value() &&
-         (_args.at(1) = rule()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("appendRules", [this, _args]() { return appendRules(eval(_args.at(0)), eval(_args.at(1))); }));
+      if((_args.at(0) = value, true) &&
+         rule(&_args.at(1))) {
+        setMatch(match, std::make_shared<lilyan::Action>("appendRules", [this, _args]() { return appendRules(eval(_args.at(0)), eval(_args.at(1))); }));
       }
       getInput() = _input;
     }
-    return result.value.has_value() ? rules(applyResult(result)) : value;
+    return match.value ? rules(applyMatch(match, result)) : value;
   }
-  std::any rule() {
-    Result result;
+  bool rule(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 2> _args;
-      if((_args.at(0) = getToken(std::regex(R"(\w+)"))).has_value() &&
-         getToken(std::string(":")).has_value() &&
-         (_args.at(1) = semantics()).has_value() &&
-         getToken(std::string(";")).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onRule", [this, _args]() { return onRule(eval(_args.at(0)), eval(_args.at(1))); }));
+      if(getToken(std::regex(R"(\w+)"), &_args.at(0)) &&
+         getToken(std::string(":")) &&
+         semantics(&_args.at(1)) &&
+         getToken(std::string(";"))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onRule", [this, _args]() { return onRule(eval(_args.at(0)), eval(_args.at(1))); }));
       }
       getInput() = _input;
     }
-    return applyResult(result);
+    return applyMatch(match, result);
   }
-  std::any semantics() {
-    Result result;
+  bool semantics(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = semantic()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onSemantics", [this, _args]() { return onSemantics(eval(_args.at(0))); }));
+      if(semantic(&_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onSemantics", [this, _args]() { return onSemantics(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
-    return semantics(applyResult(result));
+    return semantics(applyMatch(match, result));
   }
-  std::any semantics(const std::any& value) {
-    Result result;
+  bool semantics(const std::any& value, std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 2> _args;
-      if((_args.at(0) = value).has_value() &&
-         (_args.at(1) = semantic()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("appendSemantics", [this, _args]() { return appendSemantics(eval(_args.at(0)), eval(_args.at(1))); }));
+      if((_args.at(0) = value, true) &&
+         semantic(&_args.at(1))) {
+        setMatch(match, std::make_shared<lilyan::Action>("appendSemantics", [this, _args]() { return appendSemantics(eval(_args.at(0)), eval(_args.at(1))); }));
       }
       getInput() = _input;
     }
-    return result.value.has_value() ? semantics(applyResult(result)) : value;
+    return match.value ? semantics(applyMatch(match, result)) : value;
   }
-  std::any semantic() {
-    Result result;
+  bool semantic(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 2> _args;
-      if((_args.at(0) = tokens()).has_value() &&
-         getToken(std::string("->")).has_value() &&
-         (_args.at(1) = action()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onSemantic", [this, _args]() { return onSemantic(eval(_args.at(0)), eval(_args.at(1))); }));
+      if(tokens(&_args.at(0)) &&
+         getToken(std::string("->")) &&
+         action(&_args.at(1))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onSemantic", [this, _args]() { return onSemantic(eval(_args.at(0)), eval(_args.at(1))); }));
       }
       getInput() = _input;
     }
-    return applyResult(result);
+    return applyMatch(match, result);
   }
-  std::any tokens() {
-    Result result;
+  bool tokens(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = token()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onTokens", [this, _args]() { return onTokens(eval(_args.at(0))); }));
+      if(token(&_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onTokens", [this, _args]() { return onTokens(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
-    return tokens(applyResult(result));
+    return tokens(applyMatch(match, result));
   }
-  std::any tokens(const std::any& value) {
-    Result result;
+  bool tokens(const std::any& value, std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 2> _args;
-      if((_args.at(0) = value).has_value() &&
-         (_args.at(1) = token()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("appendTokens", [this, _args]() { return appendTokens(eval(_args.at(0)), eval(_args.at(1))); }));
+      if((_args.at(0) = value, true) &&
+         token(&_args.at(1))) {
+        setMatch(match, std::make_shared<lilyan::Action>("appendTokens", [this, _args]() { return appendTokens(eval(_args.at(0)), eval(_args.at(1))); }));
       }
       getInput() = _input;
     }
-    return result.value.has_value() ? tokens(applyResult(result)) : value;
+    return match.value ? tokens(applyMatch(match, result)) : value;
   }
-  std::any token() {
-    Result result;
+  bool token(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = getToken(std::regex(R"((\w+)([\?\*\+])?)"))).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("tokenRule", [this, _args]() { return tokenRule(eval(_args.at(0))); }));
+      if(getToken(std::regex(R"((\w+)([\?\*\+])?)"), &_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("tokenRule", [this, _args]() { return tokenRule(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = getToken(std::string("''"))).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("tokenString", [this, _args]() { return tokenString(eval(_args.at(0))); }));
+      if(getToken(std::string("''"), &_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("tokenString", [this, _args]() { return tokenString(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = getToken(std::string("\"\""))).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("tokenString", [this, _args]() { return tokenString(eval(_args.at(0))); }));
+      if(getToken(std::string("\"\""), &_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("tokenString", [this, _args]() { return tokenString(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = getToken(std::string("//"))).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("tokenRegexp", [this, _args]() { return tokenRegexp(eval(_args.at(0))); }));
+      if(getToken(std::string("//"), &_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("tokenRegexp", [this, _args]() { return tokenRegexp(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
-    return applyResult(result);
+    return applyMatch(match, result);
   }
-  std::any action() {
-    Result result;
+  bool action(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 2> _args;
-      if((_args.at(0) = getToken(std::regex(R"(\w+)"))).has_value() &&
-         getToken(std::string("(")).has_value() &&
-         (_args.at(1) = args()).has_value() &&
-         getToken(std::string(")")).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onActionRule", [this, _args]() { return onActionRule(eval(_args.at(0)), eval(_args.at(1))); }));
+      if(getToken(std::regex(R"(\w+)"), &_args.at(0)) &&
+         getToken(std::string("(")) &&
+         args(&_args.at(1)) &&
+         getToken(std::string(")"))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onActionRule", [this, _args]() { return onActionRule(eval(_args.at(0)), eval(_args.at(1))); }));
       }
       getInput() = _input;
     }
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = arg()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onActionArg", [this, _args]() { return onActionArg(eval(_args.at(0))); }));
+      if(arg(&_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onActionArg", [this, _args]() { return onActionArg(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
-    return applyResult(result);
+    return applyMatch(match, result);
   }
-  std::any args() {
-    Result result;
+  bool args(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = arg()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onArgs", [this, _args]() { return onArgs(eval(_args.at(0))); }));
+      if(arg(&_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onArgs", [this, _args]() { return onArgs(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
-    return args(applyResult(result));
+    return args(applyMatch(match, result));
   }
-  std::any args(const std::any& value) {
-    Result result;
+  bool args(const std::any& value, std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 2> _args;
-      if((_args.at(0) = value).has_value() &&
-         getToken(std::string(",")).has_value() &&
-         (_args.at(1) = arg()).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("appendArgs", [this, _args]() { return appendArgs(eval(_args.at(0)), eval(_args.at(1))); }));
+      if((_args.at(0) = value, true) &&
+         getToken(std::string(",")) &&
+         arg(&_args.at(1))) {
+        setMatch(match, std::make_shared<lilyan::Action>("appendArgs", [this, _args]() { return appendArgs(eval(_args.at(0)), eval(_args.at(1))); }));
       }
       getInput() = _input;
     }
-    return result.value.has_value() ? args(applyResult(result)) : value;
+    return match.value ? args(applyMatch(match, result)) : value;
   }
-  std::any arg() {
-    Result result;
+  bool arg(std::any* result = nullptr) {
+    Match match;
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = getToken(std::regex(R"(\$(\d+))"))).has_value()) {
-        setResult(result, std::make_shared<lilyan::Action>("onArg", [this, _args]() { return onArg(eval(_args.at(0))); }));
+      if(getToken(std::regex(R"(\$(\d+))"), &_args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onArg", [this, _args]() { return onArg(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
-    return applyResult(result);
+    return applyMatch(match, result);
   }
  protected:
   Grammer() = default;
