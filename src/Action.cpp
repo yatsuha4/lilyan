@@ -42,20 +42,24 @@ std::string Action::prematch() const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::string Action::match(size_t index, const std::string& value) const {
+std::string Action::match(size_t index, 
+                          const Rule& rule, 
+                          const Token& token) const {
   auto iter = std::find(args_.begin(), args_.end(), index + 1);
   if(iter != args_.end()) {
-    std::ostringstream stream;
+    std::ostringstream arg;
+    arg << "_args.at(" << (iter - args_.begin()) << ")";
     if(hasFunc()) {
-      stream << "(_args.at(" << (iter - args_.begin()) << ") = "
-             << value << ")";
+      return token.toCpp(rule, arg.str());
     }
+    /*
     else {
-      stream << "(result = " << value << ")";
+      std::ostringstream stream;
+      stream << "(" << arg.str() << " = " result = " << value << ")";
     }
-    return stream.str();
+    */
   }
-  return value;
+  return token.toCpp(rule, "");
 }
 /***********************************************************************//**
 	@brief 

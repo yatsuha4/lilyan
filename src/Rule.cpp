@@ -42,21 +42,21 @@ void Rule::putCpp(Parser& parser) const {
     stream << "nothing semantic for " << name_;
     throw lilyan::Error(stream.str());
   }
-  output << "std::any " << name_ << "() " << '{';
-  output << "Result result;" << '\n';
+  output << "bool " << name_ << "(std::any* result = nullptr) " << '{';
+  output << "Match match;" << '\n';
   for(auto& semantic : semantics_) {
     semantic->putCpp(parser, *this);
   }
-  output << "return " << getReturn("applyResult(result)") << ";" << '\n';
+  output << "return " << getReturn("applyMatch(match, result)") << ";" << '\n';
   output << '}' << '\n';
   if(hasRecursive()) {
-    output << "std::any " << name_ << "(const std::any& value) " << '{';
-    output << "Result result;" << '\n';
+    output << "bool " << name_ << "(const std::any& value, std::any* result = nullptr) " << '{';
+    output << "Match match;" << '\n';
     for(auto& semantic : recursiveSemantics_) {
       semantic->putCpp(parser, *this);
     }
-    output << "return result.value.has_value()"
-           << " ? " << getReturn("applyResult(result)")
+    output << "return match.value"
+           << " ? " << getReturn("applyMatch(match, result)")
            << " : value;" << '\n';
     output << '}' << '\n';
   }

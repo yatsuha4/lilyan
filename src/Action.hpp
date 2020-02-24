@@ -26,7 +26,7 @@ class Action {
   std::string toString() const;
 
   std::string prematch() const;
-  std::string match(size_t index, const std::string& value) const;
+  std::string match(size_t index, const Rule& rule, const Token& token) const;
   std::string postmatch(Parser& parser) const;
 
  private:

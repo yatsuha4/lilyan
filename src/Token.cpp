@@ -20,9 +20,14 @@ std::string Token::Regexp::toString() const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::string Token::Regexp::toCpp(const ::Rule& rule) const {
+std::string Token::Regexp::toCpp(const ::Rule& rule, 
+                                 const std::string& arg) const {
   std::ostringstream stream;
-  stream << "getToken(std::regex(R\"(" << getValue() << ")\"))";
+  stream << "getToken(std::regex(R\"(" << getValue() << ")\")";
+  if(!arg.empty()) {
+    stream << ", &" << arg;
+  }
+  stream << ")";
   return stream.str();
 }
 /***********************************************************************//**
@@ -42,13 +47,23 @@ std::string Token::Rule::toString() const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::string Token::Rule::toCpp(const ::Rule& rule) const {
+std::string Token::Rule::toCpp(const ::Rule& rule, 
+                               const std::string& arg) const {
   std::ostringstream stream;
   if(rule.getName() == getValue()) {
-    stream << "value";
+    if(!arg.empty()) {
+      stream << "(" << arg << " = value, true)";
+    }
+    else {
+      stream << "true";
+    }
   }
   else {
-    stream << getValue() << "()";
+    stream << getValue() << "(";
+    if(!arg.empty()) {
+      stream << "&" << arg;
+    }
+    stream << ")";
   }
   return stream.str();
 }
@@ -63,7 +78,8 @@ std::string Token::String::toString() const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::string Token::String::toCpp(const ::Rule& rule) const {
+std::string Token::String::toCpp(const ::Rule& rule, 
+                                 const std::string& arg) const {
   std::ostringstream stream;
   stream << "getToken(std::string(\"";
   for(auto c : getValue()) {
@@ -76,7 +92,11 @@ std::string Token::String::toCpp(const ::Rule& rule) const {
       break;
     }
   }
-  stream << "\"))";
+  stream << "\")";
+  if(!arg.empty()) {
+    stream << ", &" << arg;
+  }
+  stream << ")";
   return stream.str();
 }
 /***********************************************************************//**

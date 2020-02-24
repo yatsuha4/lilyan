@@ -32,11 +32,10 @@ void Semantic::putCpp(Parser& parser, const Rule& rule) const {
     if(i > 0) {
       output << " &&" << '\n' << "   ";
     }
-    output << action_->match(i, tokens_->at(i)->toCpp(rule));
-    output << ".has_value()";
+    output << action_->match(i, rule, *tokens_->at(i));
   }
   output << ") " << '{';
-  output << "setResult(result, " << action_->postmatch(parser) << ");" << '\n';
+  output << "setMatch(match, " << action_->postmatch(parser) << ");" << '\n';
   output << '}' << '\n';
   output << "getInput() = _input;" << '\n';
   output << '}' << '\n';
