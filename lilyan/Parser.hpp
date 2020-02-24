@@ -13,6 +13,12 @@ namespace lilyan {
 ***************************************************************************/
 class Parser {
  private:
+  struct Result {
+    std::any value;
+    Input input;
+  };
+
+ private:
   Input input_;
 
  public:
@@ -69,6 +75,10 @@ class Parser {
     throw Error(stream.str());
   }
 
+  virtual void warning(const std::string& message) {
+    std::cerr << "WARNING: " << message << " at " << getInput().toString() << std::endl;
+  }
+
  protected:
   Parser() = default;
   virtual ~Parser() = default;
@@ -118,6 +128,23 @@ class Parser {
   std::any checkValue(const std::any& value) {
     assert(value.has_value());
     return value;
+  }
+
+  void setResult(Result& result, const std::any& value) {
+    if(result.value.has_value()) {
+      warning("conflict rule");
+    }
+    else {
+      result.value = value;
+      result.input = getInput();
+    }
+  }
+
+  const std::any& applyResult(const Result& result) {
+    if(result.value.has_value()) {
+      getInput() = result.input;
+    }
+    return result.value;
   }
 };
 /***********************************************************************//**

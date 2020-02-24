@@ -43,17 +43,20 @@ void Rule::putCpp(Parser& parser) const {
     throw lilyan::Error(stream.str());
   }
   output << "std::any " << name_ << "() " << '{';
+  output << "Result result;" << '\n';
   for(auto& semantic : semantics_) {
     semantic->putCpp(parser, *this);
   }
-  output << "return " << getReturn("std::any()") << ";" << '\n';
+  output << "return " << getReturn("applyResult(result)") << ";" << '\n';
   output << '}' << '\n';
   if(hasRecursive()) {
     output << "std::any " << name_ << "(const std::any& value) " << '{';
+    output << "Result result;" << '\n';
     for(auto& semantic : recursiveSemantics_) {
       semantic->putCpp(parser, *this);
     }
-    output << "return value;" << '\n';
+    output << "return result.value.has_value() ? applyResult(result) : value;"
+           << '\n';
     output << '}' << '\n';
   }
 }
