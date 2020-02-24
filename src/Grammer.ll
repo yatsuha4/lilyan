@@ -22,7 +22,7 @@ tokens:
   ;
 
 token:
-  /\w+/ -> tokenRule($1)
+  /(\w+)([\?\*\+])?/ -> tokenRule($1)
   "''" -> tokenString($1)
   '""' -> tokenString($1)
   '//' -> tokenRegexp($1)

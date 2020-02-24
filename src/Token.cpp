@@ -28,6 +28,14 @@ std::string Token::Regexp::toCpp(const ::Rule& rule) const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
+Token::Rule::Rule(const std::string& value, Repeat repeat)
+  : Token(value), 
+    repeat_(repeat)
+{
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
 std::string Token::Rule::toString() const {
   return getValue();
 }

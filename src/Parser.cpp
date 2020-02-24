@@ -121,7 +121,7 @@ std::any Parser::appendTokens(const std::any& _tokens, const std::any& _token) {
 ***************************************************************************/
 std::any Parser::tokenRule(const std::any& _rule) {
   return std::static_pointer_cast<Token>
-    (std::make_shared<Token::Rule>(std::any_cast<std::smatch>(_rule)[0]));
+    (std::make_shared<Token::Rule>(std::any_cast<std::smatch>(_rule)[0], Repeat::Null));
 }
 /***********************************************************************//**
 	@brief 

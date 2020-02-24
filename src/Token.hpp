@@ -44,8 +44,11 @@ class Token::Regexp
 class Token::Rule
   : public Token
 {
+ private:
+  Repeat repeat_;
+
  public:
-  Rule(const std::string& value) : Token(value) {}
+  Rule(const std::string& value, Repeat repeat);
   ~Rule() override = default;
 
   std::string toString() const override;
