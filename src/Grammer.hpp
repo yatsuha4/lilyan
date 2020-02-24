@@ -24,7 +24,7 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = _input;
     }
-    return result.value.has_value() ? applyResult(result) : value;
+    return result.value.has_value() ? rules(applyResult(result)) : value;
   }
   std::any rule() {
     Result result;
@@ -64,7 +64,7 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = _input;
     }
-    return result.value.has_value() ? applyResult(result) : value;
+    return result.value.has_value() ? semantics(applyResult(result)) : value;
   }
   std::any semantic() {
     Result result;
@@ -103,7 +103,7 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = _input;
     }
-    return result.value.has_value() ? applyResult(result) : value;
+    return result.value.has_value() ? tokens(applyResult(result)) : value;
   }
   std::any token() {
     Result result;
@@ -188,7 +188,7 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = _input;
     }
-    return result.value.has_value() ? applyResult(result) : value;
+    return result.value.has_value() ? args(applyResult(result)) : value;
   }
   std::any arg() {
     Result result;
