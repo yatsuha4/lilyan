@@ -16,11 +16,13 @@ Parser::Parser()
 ***************************************************************************/
 void Parser::parse(const std::string& file) {
   if(getInput().read(file)) {
-    auto result = rules();
-    //dump(std::cout, result);
-    result = eval(result);
-    auto rules = std::any_cast<std::shared_ptr<Rules>>(result);
-    putCpp(*rules);
+    std::any result;
+    if(rules(&result)) {
+      //dump(std::cout, result);
+      result = eval(result);
+      auto rules = std::any_cast<std::shared_ptr<Rules>>(result);
+      putCpp(*rules);
+    }
   }
   else {
     std::ostringstream stream;

@@ -24,7 +24,7 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = _input;
     }
-    return match.value ? rules(applyMatch(match, result)) : value;
+    return match.value ? rules(applyMatch(match, result)) : true;
   }
   bool rule(std::any* result = nullptr) {
     Match match;
@@ -64,7 +64,7 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = _input;
     }
-    return match.value ? semantics(applyMatch(match, result)) : value;
+    return match.value ? semantics(applyMatch(match, result)) : true;
   }
   bool semantic(std::any* result = nullptr) {
     Match match;
@@ -103,7 +103,7 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = _input;
     }
-    return match.value ? tokens(applyMatch(match, result)) : value;
+    return match.value ? tokens(applyMatch(match, result)) : true;
   }
   bool token(std::any* result = nullptr) {
     Match match;
@@ -188,7 +188,7 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = _input;
     }
-    return match.value ? args(applyMatch(match, result)) : value;
+    return match.value ? args(applyMatch(match, result)) : true;
   }
   bool arg(std::any* result = nullptr) {
     Match match;
