@@ -28,7 +28,7 @@ std::string Token::Regexp::toCpp(const ::Rule& rule) const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-Token::Rule::Rule(const std::string& value, Repeat repeat)
+Token::Rule::Rule(const std::string& value, lilyan::Repeat repeat)
   : Token(value), 
     repeat_(repeat)
 {

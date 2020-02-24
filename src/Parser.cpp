@@ -123,10 +123,10 @@ std::any Parser::tokenRule(const std::any& _match) {
   auto match = std::any_cast<std::smatch>(_match);
   auto name = match[1];
   auto repeat =
-    (match[2] == "?") ? Repeat::ZeroOne
-    : (match[2] == "*") ? Repeat::ZeroAny
-    : (match[2] == "+") ? Repeat::OneAny
-    : Repeat::Null;
+    (match[2] == "?") ? lilyan::Repeat::ZeroOne
+    : (match[2] == "*") ? lilyan::Repeat::ZeroAny
+    : (match[2] == "+") ? lilyan::Repeat::OneAny
+    : lilyan::Repeat::Null;
   return std::static_pointer_cast<Token>
     (std::make_shared<Token::Rule>(name, repeat));
 }

@@ -45,10 +45,10 @@ class Token::Rule
   : public Token
 {
  private:
-  Repeat repeat_;
+  lilyan::Repeat repeat_;
 
  public:
-  Rule(const std::string& value, Repeat repeat);
+  Rule(const std::string& value, lilyan::Repeat repeat);
   ~Rule() override = default;
 
   std::string toString() const override;

@@ -16,6 +16,13 @@
 
 namespace lilyan {
 using List = std::vector<std::any>;
+
+enum class Repeat {
+  Null, 
+  ZeroOne, 
+  ZeroAny, 
+  OneAny
+};
 }
 
 #include "lilyan/Parser.hpp"

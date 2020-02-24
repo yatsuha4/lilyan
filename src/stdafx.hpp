@@ -9,13 +9,6 @@
 #include "lilyan/lilyan.hpp"
 #include "optionparser/OptionParser.hpp"
 
-enum class Repeat {
-  Null, 
-  ZeroOne, 
-  ZeroAny, 
-  OneAny
-};
-
 class Action;
 class Output;
 class Parser;

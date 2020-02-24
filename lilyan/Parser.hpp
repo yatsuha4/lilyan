@@ -147,6 +147,30 @@ class Parser {
     }
     return result.value;
   }
+
+  const std::any repeatRule(Repeat repeat, std::function<std::any()> func) {
+    switch(repeat) {
+    case Repeat::ZeroAny:
+      {
+        std::vector<std::any> result;
+        for(auto value = func(); value.has_value();) {
+          result.push_back(value);
+        }
+        return result;
+      }
+    case Repeat::OneAny:
+      {
+        std::vector<std::any> result;
+        for(auto value = func(); value.has_value();) {
+          result.push_back(value);
+        }
+        return result.empty() ? std::any() : result;
+      }
+    default:
+      break;
+    }
+    return std::any();
+  }
 };
 /***********************************************************************//**
 	$Id$
