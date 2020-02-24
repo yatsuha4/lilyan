@@ -44,6 +44,7 @@ void Rule::putCpp(Parser& parser) const {
   }
   output << "bool " << name_ << "(std::any* result = nullptr) " << '{';
   output << "Match match;" << '\n';
+  output << "lilyan::Input _input(getInput());" << '\n';
   for(auto& semantic : semantics_) {
     semantic->putCpp(parser, *this);
   }
@@ -61,6 +62,7 @@ void Rule::putCpp(Parser& parser) const {
   if(hasRecursive()) {
     output << "void " << name_ << "(const std::any& value, std::any* result = nullptr) " << '{';
     output << "Match match;" << '\n';
+    output << "lilyan::Input _input(getInput());" << '\n';
     for(auto& semantic : recursiveSemantics_) {
       semantic->putCpp(parser, *this);
     }
