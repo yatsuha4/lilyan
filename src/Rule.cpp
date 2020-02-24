@@ -57,7 +57,7 @@ void Rule::putCpp(Parser& parser) const {
     }
     output << "return match.value"
            << " ? " << getReturn("applyMatch(match, result)")
-           << " : value;" << '\n';
+           << " : true;" << '\n';
     output << '}' << '\n';
   }
 }
