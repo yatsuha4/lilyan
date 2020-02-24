@@ -55,8 +55,9 @@ void Rule::putCpp(Parser& parser) const {
     for(auto& semantic : recursiveSemantics_) {
       semantic->putCpp(parser, *this);
     }
-    output << "return result.value.has_value() ? applyResult(result) : value;"
-           << '\n';
+    output << "return result.value.has_value()"
+           << " ? " << getReturn("applyResult(result)")
+           << " : value;" << '\n';
     output << '}' << '\n';
   }
 }
