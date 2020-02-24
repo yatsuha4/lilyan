@@ -119,9 +119,16 @@ std::any Parser::appendTokens(const std::any& _tokens, const std::any& _token) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::tokenRule(const std::any& _rule) {
+std::any Parser::tokenRule(const std::any& _match) {
+  auto match = std::any_cast<std::smatch>(_match);
+  auto name = match[1];
+  auto repeat =
+    (match[2] == "?") ? Repeat::ZeroOne
+    : (match[2] == "*") ? Repeat::ZeroAny
+    : (match[2] == "+") ? Repeat::OneAny
+    : Repeat::Null;
   return std::static_pointer_cast<Token>
-    (std::make_shared<Token::Rule>(std::any_cast<std::smatch>(_rule)[0], Repeat::Null));
+    (std::make_shared<Token::Rule>(name, repeat));
 }
 /***********************************************************************//**
 	@brief 

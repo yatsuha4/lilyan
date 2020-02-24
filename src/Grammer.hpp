@@ -110,7 +110,7 @@ class Grammer : public lilyan::Parser {
     {
       lilyan::Input _input(getInput());
       std::array<std::any, 1> _args;
-      if((_args.at(0) = getToken(std::regex(R"(\w+)"))).has_value()) {
+      if((_args.at(0) = getToken(std::regex(R"((\w+)([\?\*\+])?)"))).has_value()) {
         setResult(result, std::make_shared<lilyan::Action>("tokenRule", [this, _args]() { return tokenRule(eval(_args.at(0))); }));
       }
       getInput() = _input;
