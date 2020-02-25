@@ -89,19 +89,12 @@ std::any Parser::onSemantic(const std::any& _tokens, const std::any& _action) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onTokens(const std::any& _token) {
+std::any Parser::onTokens(const std::any& _tokens) {
   auto tokens = std::make_shared<Tokens>();
-  auto token = std::any_cast<std::shared_ptr<Token>>(_token);
-  tokens->push_back(token);
-  return tokens;
-}
-/***********************************************************************//**
-	@brief 
-***************************************************************************/
-std::any Parser::appendTokens(const std::any& _tokens, const std::any& _token) {
-  auto tokens = std::any_cast<std::shared_ptr<Tokens>>(_tokens);
-  auto token = std::any_cast<std::shared_ptr<Token>>(_token);
-  tokens->push_back(token);
+  for(auto& _token : std::any_cast<std::vector<std::any>>(_tokens)) {
+    auto token = std::any_cast<std::shared_ptr<Token>>(_token);
+    tokens->push_back(token);
+  }
   return tokens;
 }
 /***********************************************************************//**

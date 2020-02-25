@@ -15,8 +15,7 @@ semantic:
   ;
 
 tokens:
-  token -> onTokens($1)
-  tokens token -> appendTokens($1, $2)
+  token+ -> onTokens($1)
   ;
 
 token:
