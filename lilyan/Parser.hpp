@@ -151,7 +151,9 @@ class Parser {
     return false;
   }
 
-  bool isMatch(Repeat repeat, std::any* result, std::function<bool(std::any*)> func) {
+  bool isMatch(Repeat repeat, 
+               std::function<bool(std::any*)> func, 
+               std::any* result = nullptr) {
     switch(repeat) {
     case Repeat::One:
       return func(result);

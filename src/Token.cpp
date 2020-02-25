@@ -59,9 +59,18 @@ std::string Token::Rule::toCpp(const ::Rule& rule,
     }
   }
   else {
-    stream << getValue() << "(";
+    static const char* REPEATS[] = {
+      "One", 
+      "OneAny", 
+      "ZeroAny", 
+      "ZeroOne"
+    };
+    stream << "isMatch(lilyan::Repeat::"
+           << REPEATS[static_cast<size_t>(repeat_)]
+           << ", [this](std::any* r) { return "
+           << getValue() << "(r); }";
     if(!arg.empty()) {
-      stream << "&" << arg;
+      stream << ", &" << arg;
     }
     stream << ")";
   }
