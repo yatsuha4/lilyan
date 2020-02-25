@@ -48,19 +48,12 @@ std::any Parser::onGetToken(const std::string& pattern) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onRules(const std::any& _rule) {
+std::any Parser::onRules(const std::any& _rules) {
   auto rules = std::make_shared<Rules>();
-  auto rule = std::any_cast<std::shared_ptr<Rule>>(_rule);
-  rules->push_back(rule);
-  return rules;
-}
-/***********************************************************************//**
-	@brief 
-***************************************************************************/
-std::any Parser::appendRules(const std::any& _rules, const std::any& _rule) {
-  auto rules = std::any_cast<std::shared_ptr<Rules>>(_rules);
-  auto rule = std::any_cast<std::shared_ptr<Rule>>(_rule);
-  rules->push_back(rule);
+  for(auto& _rule : std::any_cast<std::vector<std::any>>(_rules)) {
+    auto rule = std::any_cast<std::shared_ptr<Rule>>(_rule);
+    rules->push_back(rule);
+  }
   return rules;
 }
 /***********************************************************************//**

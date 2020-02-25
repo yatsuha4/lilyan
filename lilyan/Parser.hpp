@@ -27,6 +27,13 @@ class Parser {
       auto action = std::any_cast<std::shared_ptr<Action>>(value);
       return action->func();
     }
+    else if(value.type() == typeid(std::vector<std::any>)) {
+      std::vector<std::any> list;
+      for(auto& iter : std::any_cast<std::vector<std::any>>(value)) {
+        list.push_back(eval(iter));
+      }
+      return list;
+    }
     return value;
   }
 

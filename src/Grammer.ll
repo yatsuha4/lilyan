@@ -1,6 +1,5 @@
 rules:
-  rule -> onRules($1)
-  rules rule -> appendRules($1, $2)
+  rule* -> onRules($1)
   ;
 
 rule:
