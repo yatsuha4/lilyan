@@ -12,7 +12,7 @@ class Action {
 
  public:
   Action(const std::string& name, const std::vector<int>& args);
-  Action(const std::vector<int>& args);
+  Action(int arg);
   ~Action() = default;
 
   const auto& getName() const {

@@ -14,9 +14,8 @@ Action::Action(const std::string& name, const std::vector<int>& args)
 /***********************************************************************//**
 	@brief コンストラクタ
 ***************************************************************************/
-Action::Action(const std::vector<int>& args)
-  : args_(args)
-{
+Action::Action(int arg) {
+  args_.push_back(arg);
 }
 /***********************************************************************//**
 	@brief 
@@ -49,15 +48,7 @@ std::string Action::match(size_t index,
   if(iter != args_.end()) {
     std::ostringstream arg;
     arg << "_args.at(" << (iter - args_.begin()) << ")";
-    if(hasFunc()) {
-      return token.toCpp(rule, arg.str());
-    }
-    /*
-    else {
-      std::ostringstream stream;
-      stream << "(" << arg.str() << " = " result = " << value << ")";
-    }
-    */
+    return token.toCpp(rule, arg.str());
   }
   return token.toCpp(rule, "");
 }
