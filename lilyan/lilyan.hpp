@@ -18,10 +18,10 @@ namespace lilyan {
 using List = std::vector<std::any>;
 
 enum class Repeat {
-  Null, 
-  ZeroOne, 
+  One, 
+  OneAny, 
   ZeroAny, 
-  OneAny
+  ZeroOne
 };
 }
 

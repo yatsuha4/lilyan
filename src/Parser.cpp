@@ -128,7 +128,7 @@ std::any Parser::tokenRule(const std::any& _match) {
     (match[2] == "?") ? lilyan::Repeat::ZeroOne
     : (match[2] == "*") ? lilyan::Repeat::ZeroAny
     : (match[2] == "+") ? lilyan::Repeat::OneAny
-    : lilyan::Repeat::Null;
+    : lilyan::Repeat::One;
   return std::static_pointer_cast<Token>
     (std::make_shared<Token::Rule>(name, repeat));
 }

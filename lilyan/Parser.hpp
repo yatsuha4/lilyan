@@ -151,28 +151,31 @@ class Parser {
     return false;
   }
 
-  const std::any repeatRule(Repeat repeat, std::function<std::any()> func) {
+  bool isMatch(Repeat repeat, std::any* result, std::function<bool(std::any*)> func) {
     switch(repeat) {
+    case Repeat::One:
+      return func(result);
+    case Repeat::OneAny:
     case Repeat::ZeroAny:
       {
-        std::vector<std::any> result;
-        for(auto value = func(); value.has_value();) {
-          result.push_back(value);
+        std::vector<std::any> list;
+        std::any value;
+        while(func(&value)) {
+          list.push_back(value);
         }
-        return result;
-      }
-    case Repeat::OneAny:
-      {
-        std::vector<std::any> result;
-        for(auto value = func(); value.has_value();) {
-          result.push_back(value);
+        if(repeat == Repeat::ZeroAny || !list.empty()) {
+          *result = list;
+          return true;
         }
-        return result.empty() ? std::any() : result;
       }
-    default:
       break;
+    case Repeat::ZeroOne:
+      if(!func(result)) {
+        result->reset();
+      }
+      return true;
     }
-    return std::any();
+    return false;
   }
 
  private:
