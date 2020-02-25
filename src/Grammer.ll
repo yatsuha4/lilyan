@@ -31,8 +31,11 @@ action:
   ;
 
 args:
-  arg -> onArgs($1)
-  args ',' arg -> appendArgs($1, $3)
+  arg args_r* -> onArgs($1, $2)
+  ;
+
+args_r:
+  ',' arg -> $2
   ;
 
 arg:

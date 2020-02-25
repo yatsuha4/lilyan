@@ -148,17 +148,12 @@ std::any Parser::onActionArg(const std::any& _arg) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onArgs(const std::any& _arg) {
+std::any Parser::onArgs(const std::any& _arg, const std::any& _args_r) {
   std::vector<int> list;
   list.push_back(std::any_cast<int>(_arg));
-  return list;
-}
-/***********************************************************************//**
-	@brief 
-***************************************************************************/
-std::any Parser::appendArgs(const std::any& _args, const std::any& _arg) {
-  auto list = std::any_cast<std::vector<int>>(_args);
-  list.push_back(std::any_cast<int>(_arg));
+  for(auto& iter : std::any_cast<std::vector<std::any>>(_args_r)) {
+    list.push_back(std::any_cast<int>(iter));
+  }
   return list;
 }
 /***********************************************************************//**
