@@ -69,19 +69,12 @@ std::any Parser::onRule(const std::any& _name, const std::any& _semantics) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onSemantics(const std::any& _semantic) {
+std::any Parser::onSemantics(const std::any& _semantics) {
   auto semantics = std::make_shared<Semantics>();
-  auto semantic = std::any_cast<std::shared_ptr<Semantic>>(_semantic);
-  semantics->push_back(semantic);
-  return semantics;
-}
-/***********************************************************************//**
-	@brief 
-***************************************************************************/
-std::any Parser::appendSemantics(const std::any& _semantics, const std::any& _semantic) {
-  auto semantics = std::any_cast<std::shared_ptr<Semantics>>(_semantics);
-  auto semantic = std::any_cast<std::shared_ptr<Semantic>>(_semantic);
-  semantics->push_back(semantic);
+  for(auto& _semantic : std::any_cast<std::vector<std::any>>(_semantics)) {
+    auto semantic = std::any_cast<std::shared_ptr<Semantic>>(_semantic);
+    semantics->push_back(semantic);
+  }
   return semantics;
 }
 /***********************************************************************//**

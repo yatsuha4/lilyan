@@ -33,31 +33,12 @@ class Grammer : public lilyan::Parser {
     lilyan::Input _input(getInput());
     {
       std::array<std::any, 1> _args;
-      if(isMatch(lilyan::Repeat::One, [this](std::any* r) { return semantic(r); }, &_args.at(0))) {
+      if(isMatch(lilyan::Repeat::OneAny, [this](std::any* r) { return semantic(r); }, &_args.at(0))) {
         setMatch(match, std::make_shared<lilyan::Action>("onSemantics", [this, _args]() { return onSemantics(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
-    if(applyMatch(match, result)) {
-      semantics(*match.value, result);
-      return true;
-    }
-    return false;
-  }
-  void semantics(const std::any& value, std::any* result = nullptr) {
-    Match match;
-    lilyan::Input _input(getInput());
-    {
-      std::array<std::any, 2> _args;
-      if((static_cast<void>(_args.at(0) = value), true) &&
-         isMatch(lilyan::Repeat::One, [this](std::any* r) { return semantic(r); }, &_args.at(1))) {
-        setMatch(match, std::make_shared<lilyan::Action>("appendSemantics", [this, _args]() { return appendSemantics(eval(_args.at(0)), eval(_args.at(1))); }));
-      }
-      getInput() = _input;
-    }
-    if(applyMatch(match, result)) {
-      semantics(*match.value, result);
-    }
+    return applyMatch(match, result);
   }
   bool semantic(std::any* result = nullptr) {
     Match match;
@@ -209,7 +190,6 @@ class Grammer : public lilyan::Parser {
   virtual std::any onRules(const std::any&) = 0;
   virtual std::any onRule(const std::any&, const std::any&) = 0;
   virtual std::any onSemantics(const std::any&) = 0;
-  virtual std::any appendSemantics(const std::any&, const std::any&) = 0;
   virtual std::any onSemantic(const std::any&, const std::any&) = 0;
   virtual std::any onTokens(const std::any&) = 0;
   virtual std::any appendTokens(const std::any&, const std::any&) = 0;

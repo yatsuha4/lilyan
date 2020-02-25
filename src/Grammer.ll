@@ -7,8 +7,7 @@ rule:
   ;
 
 semantics:
-  semantic -> onSemantics($1)
-  semantics semantic -> appendSemantics($1, $2)
+  semantic+ -> onSemantics($1)
   ;
 
 semantic:
