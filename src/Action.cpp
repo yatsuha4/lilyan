@@ -14,8 +14,8 @@ Action::Arg::Arg(int index)
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::string Action::Arg::prematch() const {
-  return std::string("std::any _arg;");
+void Action::Arg::prematch(Output& output) const {
+  output << "std::any _arg;" << '\n';
 }
 /***********************************************************************//**
 	@brief 
@@ -34,6 +34,32 @@ std::string Action::Arg::postmatch(Parser& parser) const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
+Action::Const::Const(const std::string& value)
+  : value_(value)
+{
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+void Action::Const::prematch(Output& output) const {
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+std::string Action::Const::match(size_t index, 
+                                 const Rule& rule, 
+                                 const Token& token) const {
+  return token.toCpp(rule, "");
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+std::string Action::Const::postmatch(Parser& parser) const {
+  return value_;
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
 Action::Func::Func(const std::string& name, const std::vector<int>& args)
   : name_(name), 
     args_(args)
@@ -42,12 +68,10 @@ Action::Func::Func(const std::string& name, const std::vector<int>& args)
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::string Action::Func::prematch() const {
-  std::ostringstream stream;
+void Action::Func::prematch(Output& output) const {
   if(!args_.empty()) {
-    stream << "std::array<std::any, " << args_.size() << "> _args;";
+    output << "std::array<std::any, " << args_.size() << "> _args;" << '\n';
   }
-  return stream.str();
 }
 /***********************************************************************//**
 	@brief 

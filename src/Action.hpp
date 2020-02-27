@@ -8,13 +8,14 @@
 class Action {
  public:
   class Arg;
+  class Const;
   class Func;
 
  public:
   Action() = default;
   virtual ~Action() = default;
 
-  virtual std::string prematch() const = 0;
+  virtual void prematch(Output& output) const = 0;
   virtual std::string match(size_t index, 
                             const Rule& rule, 
                             const Token& token) const = 0;
@@ -37,7 +38,26 @@ class Action::Arg
   Arg(int index);
   ~Arg() override = default;
 
-  std::string prematch() const override;
+  void prematch(Output& output) const override;
+  std::string match(size_t index, 
+                    const Rule& rule, 
+                    const Token& token) const override;
+  std::string postmatch(Parser& parser) const override;
+};
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+class Action::Const
+  : public Action
+{
+ private:
+  std::string value_;
+
+ public:
+  Const(const std::string& value);
+  ~Const() override = default;
+
+  void prematch(Output& output) const override;
   std::string match(size_t index, 
                     const Rule& rule, 
                     const Token& token) const override;
@@ -65,7 +85,7 @@ class Action::Func
     return args_;
   }
 
-  std::string prematch() const override;
+  void prematch(Output& output) const override;
   std::string match(size_t index, 
                     const Rule& rule, 
                     const Token& token) const override;

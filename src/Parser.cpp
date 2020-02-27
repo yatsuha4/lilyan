@@ -148,8 +148,9 @@ std::any Parser::onActionRule(const std::any& _name, const std::any& _args) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onActionConst(const std::any& value) {
-  return value;
+std::any Parser::onActionConst(const std::any& match) {
+  return std::static_pointer_cast<Action>
+    (std::make_shared<Action::Const>(std::any_cast<std::smatch>(match)[0]));
 }
 /***********************************************************************//**
 	@brief 

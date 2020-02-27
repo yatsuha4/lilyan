@@ -25,7 +25,7 @@ bool Semantic::isRecursive(const std::string& name) const {
 void Semantic::putCpp(Parser& parser, const Rule& rule) const {
   auto& output = parser.getOutput();
   output << '{';
-  output << action_->prematch() << '\n';
+  action_->prematch(output);
   output << "if(";
   for(size_t i = 0, n = tokens_->size(); i < n; i++) {
     if(i > 0) {
