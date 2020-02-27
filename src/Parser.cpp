@@ -104,15 +104,9 @@ std::any Parser::tokenRule(const std::any& _match,
                            const std::any& _repeat) {
   auto match = std::any_cast<std::smatch>(_match);
   auto name = match[0];
-  auto repeat = lilyan::Repeat::One;
-  if(_repeat.has_value()) {
-    auto string = std::any_cast<std::string>(_repeat);
-    repeat =
-      (string == "?") ? lilyan::Repeat::ZeroOne
-      : (string == "*") ? lilyan::Repeat::ZeroAny
-      : (string == "+") ? lilyan::Repeat::OneAny
-      : lilyan::Repeat::One;
-  }
+  auto repeat = _repeat.has_value()
+    ? std::any_cast<lilyan::Repeat>(_repeat)
+    : lilyan::Repeat::One;
   return std::static_pointer_cast<Token>
     (std::make_shared<Token::Rule>(name, repeat));
 }

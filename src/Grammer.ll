@@ -26,9 +26,9 @@ token:
   ;
 
 token_r:
-  '?' -> $1
-  '*' -> $1
-  '+' -> $1
+  '?' -> <lilyan::Repeat::ZeroOne>
+  '*' -> <lilyan::Repeat::ZeroAny>
+  '+' -> <lilyan::Repeat::OneAny>
   ;
 
 action:

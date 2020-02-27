@@ -104,23 +104,20 @@ class Grammer : public lilyan::Parser {
     Match match;
     lilyan::Input _input(getInput());
     {
-      std::any _arg;
-      if(getToken(std::string("?"), &_arg)) {
-        setMatch(match, _arg);
+      if(getToken(std::string("?"))) {
+        setMatch(match, lilyan::Repeat::ZeroOne);
       }
       getInput() = _input;
     }
     {
-      std::any _arg;
-      if(getToken(std::string("*"), &_arg)) {
-        setMatch(match, _arg);
+      if(getToken(std::string("*"))) {
+        setMatch(match, lilyan::Repeat::ZeroAny);
       }
       getInput() = _input;
     }
     {
-      std::any _arg;
-      if(getToken(std::string("+"), &_arg)) {
-        setMatch(match, _arg);
+      if(getToken(std::string("+"))) {
+        setMatch(match, lilyan::Repeat::OneAny);
       }
       getInput() = _input;
     }
