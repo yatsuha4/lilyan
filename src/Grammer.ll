@@ -19,10 +19,16 @@ tokens:
   ;
 
 token:
-  /(\w+)([\?\*\+])?/ -> tokenRule($1)
+  /\w+/ token_r? -> tokenRule($1, $2)
   "''" -> tokenString($1)
   '""' -> tokenString($1)
   '//' -> tokenRegexp($1)
+  ;
+
+token_r:
+  '?' -> $1
+  '*' -> $1
+  '+' -> $1
   ;
 
 action:
