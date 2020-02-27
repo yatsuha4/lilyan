@@ -4,9 +4,8 @@
 #pragma once
 
 #include "Grammer.hpp"
-#include "Token.hpp"
-#include "Semantic.hpp"
 #include "Output.hpp"
+#include "Action.hpp"
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
@@ -18,7 +17,7 @@ class Parser
  private:
   std::string className_;
   Output output_;
-  std::vector<std::shared_ptr<Action>> actions_;
+  std::vector<std::shared_ptr<Action::Func>> actionFuncs_;
 
  public:
   Parser();

@@ -8,38 +8,21 @@
 class Action {
  public:
   class Arg;
-
- private:
-  std::string name_;
-  std::vector<int> args_;
+  class Func;
 
  public:
-  Action(const std::string& name, const std::vector<int>& args);
-  Action(int arg);
+  Action() = default;
   virtual ~Action() = default;
 
-  const auto& getName() const {
-    return name_;
-  }
-
-  const auto& getArgs() const {
-    return args_;
-  }
-
-  std::string toString() const;
-
-  virtual std::string prematch() const;
+  virtual std::string prematch() const = 0;
   virtual std::string match(size_t index, 
                             const Rule& rule, 
-                            const Token& token) const;
-  virtual std::string postmatch(Parser& parser) const;
+                            const Token& token) const = 0;
+  virtual std::string postmatch(Parser& parser) const = 0;
 
- protected:
-  Action() = default;
-
- private:
-  bool hasFunc() const;
-  std::string argsToString() const;
+  std::string toString() const {
+    return "";
+  }
 };
 /***********************************************************************//**
 	@brief 
@@ -53,6 +36,34 @@ class Action::Arg
  public:
   Arg(int index);
   ~Arg() override = default;
+
+  std::string prematch() const override;
+  std::string match(size_t index, 
+                    const Rule& rule, 
+                    const Token& token) const override;
+  std::string postmatch(Parser& parser) const override;
+};
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+class Action::Func
+  : public Action
+{
+ private:
+  std::string name_;
+  std::vector<int> args_;
+
+ public:
+  Func(const std::string& name, const std::vector<int>& args);
+  ~Func() override = default;
+
+  const auto& getName() const {
+    return name_;
+  }
+
+  const auto& getArgs() const {
+    return args_;
+  }
 
   std::string prematch() const override;
   std::string match(size_t index, 

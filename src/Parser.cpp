@@ -134,15 +134,16 @@ std::any Parser::tokenRegexp(const std::any& _regexp) {
 	@brief 
 ***************************************************************************/
 std::any Parser::onActionRule(const std::any& _name, const std::any& _args) {
-  auto action = std::make_shared<Action>(std::any_cast<std::smatch>(_name)[0], 
-                                         std::any_cast<std::vector<int>>(_args));
-  if(std::find_if(actions_.begin(), actions_.end(), 
-                  [&](const std::shared_ptr<Action>& iter) {
+  auto action = 
+    std::make_shared<Action::Func>(std::any_cast<std::smatch>(_name)[0], 
+                                   std::any_cast<std::vector<int>>(_args));
+  if(std::find_if(actionFuncs_.begin(), actionFuncs_.end(), 
+                  [&](const auto& iter) {
                     return iter->getName() == action->getName();
-                  }) == actions_.end()) {
-    actions_.push_back(action);
+                  }) == actionFuncs_.end()) {
+    actionFuncs_.push_back(action);
   }
-  return action;
+  return std::static_pointer_cast<Action>(action);
 }
 /***********************************************************************//**
 	@brief 
@@ -182,9 +183,9 @@ void Parser::putCpp(const Rules& rules) {
   output_ << '-' << "protected:" << '\n';
   output_ << className_ << "() = default;" << '\n';
   output_ << "~" << className_ << "() override = default;" << '\n';
-  for(auto& action : actions_) {
-    output_ << "virtual std::any " << action->getName() << "(";
-    auto& args = action->getArgs();
+  for(auto& func : actionFuncs_) {
+    output_ << "virtual std::any " << func->getName() << "(";
+    auto& args = func->getArgs();
     for(auto iter = args.begin(); iter != args.end(); iter++) {
       if(iter != args.begin()) {
         output_ << ", ";
