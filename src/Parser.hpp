@@ -43,18 +43,18 @@ class Parser
   std::any onGetToken(const std::string& pattern) override;
 
   std::any onRules(const std::any&) override;
-  std::any onRule(const std::any&, const std::any&) override;
+  std::any onRule(const std::smatch&, const std::any&) override;
   std::any onSemantics(const std::any&) override;
   std::any onSemantic(const std::any&, const std::any&) override;
   std::any onTokens(const std::any&) override;
-  std::any tokenRule(const std::any&, const std::any&) override;
-  std::any tokenString(const std::any&) override;
-  std::any tokenRegexp(const std::any&) override;
-  std::any onActionRule(const std::any&, const std::any&) override;
-  std::any onActionConst(const std::any&) override;
+  std::any tokenRule(const std::smatch&, const std::any&) override;
+  std::any tokenString(const std::string&) override;
+  std::any tokenRegexp(const std::string&) override;
+  std::any onActionRule(const std::smatch&, const std::any&) override;
+  std::any onActionConst(const std::smatch&) override;
   std::any onActionArg(const std::any&) override;
   std::any onArgs(const std::any&, const std::any&) override;
-  std::any onArg(const std::any&) override;
+  std::any onArg(const std::smatch&) override;
 
  private:
   void putCpp(const Rules& rules);

@@ -59,8 +59,8 @@ std::any Parser::onRules(const std::any& _rules) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onRule(const std::any& _name, const std::any& _semantics) {
-  auto name = std::any_cast<std::smatch>(_name)[0];
+std::any Parser::onRule(const std::smatch& _name, const std::any& _semantics) {
+  auto name = _name[0];
   auto semantics = std::any_cast<std::shared_ptr<Semantics>>(_semantics);
   auto rule = std::make_shared<Rule>(name, *semantics);
   std::cout << rule->toString();
@@ -100,10 +100,9 @@ std::any Parser::onTokens(const std::any& _tokens) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::tokenRule(const std::any& _match, 
+std::any Parser::tokenRule(const std::smatch& _name, 
                            const std::any& _repeat) {
-  auto match = std::any_cast<std::smatch>(_match);
-  auto name = match[0];
+  auto name = _name[0];
   auto repeat = _repeat.has_value()
     ? std::any_cast<lilyan::Repeat>(_repeat)
     : lilyan::Repeat::One;
@@ -113,23 +112,23 @@ std::any Parser::tokenRule(const std::any& _match,
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::tokenString(const std::any& _string) {
+std::any Parser::tokenString(const std::string& string) {
   return std::static_pointer_cast<Token>
-    (std::make_shared<Token::String>(std::any_cast<std::string>(_string)));
+    (std::make_shared<Token::String>(string));
 }
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::tokenRegexp(const std::any& _regexp) {
+std::any Parser::tokenRegexp(const std::string& regexp) {
   return std::static_pointer_cast<Token>
-    (std::make_shared<Token::Regexp>(std::any_cast<std::string>(_regexp)));
+    (std::make_shared<Token::Regexp>(regexp));
 }
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onActionRule(const std::any& _name, const std::any& _args) {
+std::any Parser::onActionRule(const std::smatch& _name, const std::any& _args) {
   auto action = 
-    std::make_shared<Action::Func>(std::any_cast<std::smatch>(_name)[0], 
+    std::make_shared<Action::Func>(_name[0], 
                                    std::any_cast<std::vector<int>>(_args));
   if(std::find_if(actionFuncs_.begin(), actionFuncs_.end(), 
                   [&](const auto& iter) {
@@ -142,9 +141,9 @@ std::any Parser::onActionRule(const std::any& _name, const std::any& _args) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onActionConst(const std::any& match) {
+std::any Parser::onActionConst(const std::smatch& match) {
   return std::static_pointer_cast<Action>
-    (std::make_shared<Action::Const>(std::any_cast<std::smatch>(match)[0]));
+    (std::make_shared<Action::Const>(match[0]));
 }
 /***********************************************************************//**
 	@brief 
@@ -167,8 +166,7 @@ std::any Parser::onArgs(const std::any& _arg, const std::any& _args_r) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onArg(const std::any& value) {
-  auto match = std::any_cast<std::smatch>(value);
+std::any Parser::onArg(const std::smatch& match) {
   return std::any(std::stoi(match[1]));
 }
 /***********************************************************************//**
