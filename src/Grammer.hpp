@@ -104,23 +104,23 @@ class Grammer : public lilyan::Parser {
     Match match;
     lilyan::Input _input(getInput());
     {
-      std::array<std::any, 1> _args;
-      if(getToken(std::string("?"), &_args.at(0))) {
-        setMatch(match, _args.at(0));
+      std::any _arg;
+      if(getToken(std::string("?"), &_arg)) {
+        setMatch(match, _arg);
       }
       getInput() = _input;
     }
     {
-      std::array<std::any, 1> _args;
-      if(getToken(std::string("*"), &_args.at(0))) {
-        setMatch(match, _args.at(0));
+      std::any _arg;
+      if(getToken(std::string("*"), &_arg)) {
+        setMatch(match, _arg);
       }
       getInput() = _input;
     }
     {
-      std::array<std::any, 1> _args;
-      if(getToken(std::string("+"), &_args.at(0))) {
-        setMatch(match, _args.at(0));
+      std::any _arg;
+      if(getToken(std::string("+"), &_arg)) {
+        setMatch(match, _arg);
       }
       getInput() = _input;
     }
@@ -136,6 +136,15 @@ class Grammer : public lilyan::Parser {
          isMatch(lilyan::Repeat::One, [this](std::any* r) { return args(r); }, &_args.at(1)) &&
          getToken(std::string(")"))) {
         setMatch(match, std::make_shared<lilyan::Action>("onActionRule", [this, _args]() { return onActionRule(eval(_args.at(0)), eval(_args.at(1))); }));
+      }
+      getInput() = _input;
+    }
+    {
+      std::array<std::any, 1> _args;
+      if(getToken(std::string("<")) &&
+         getToken(std::regex(R"([\w:]+)"), &_args.at(0)) &&
+         getToken(std::string(">"))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onActionConst", [this, _args]() { return onActionConst(eval(_args.at(0))); }));
       }
       getInput() = _input;
     }
@@ -165,10 +174,10 @@ class Grammer : public lilyan::Parser {
     Match match;
     lilyan::Input _input(getInput());
     {
-      std::array<std::any, 1> _args;
+      std::any _arg;
       if(getToken(std::string(",")) &&
-         isMatch(lilyan::Repeat::One, [this](std::any* r) { return arg(r); }, &_args.at(0))) {
-        setMatch(match, _args.at(0));
+         isMatch(lilyan::Repeat::One, [this](std::any* r) { return arg(r); }, &_arg)) {
+        setMatch(match, _arg);
       }
       getInput() = _input;
     }
@@ -198,6 +207,7 @@ class Grammer : public lilyan::Parser {
   virtual std::any tokenString(const std::any&) = 0;
   virtual std::any tokenRegexp(const std::any&) = 0;
   virtual std::any onActionRule(const std::any&, const std::any&) = 0;
+  virtual std::any onActionConst(const std::any&) = 0;
   virtual std::any onActionArg(const std::any&) = 0;
   virtual std::any onArgs(const std::any&, const std::any&) = 0;
   virtual std::any onArg(const std::any&) = 0;
