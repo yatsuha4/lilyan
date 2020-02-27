@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <map>
+#include <typeindex>
 
 #include "lilyan/lilyan.hpp"
 #include "optionparser/OptionParser.hpp"

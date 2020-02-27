@@ -185,15 +185,7 @@ void Parser::putCpp(const Rules& rules) {
   output_ << className_ << "() = default;" << '\n';
   output_ << "~" << className_ << "() override = default;" << '\n';
   for(auto& func : actionFuncs_) {
-    output_ << "virtual std::any " << func->getName() << "(";
-    auto& args = func->getArgs();
-    for(auto iter = args.begin(); iter != args.end(); iter++) {
-      if(iter != args.begin()) {
-        output_ << ", ";
-      }
-      output_ << "const std::any&";
-    }
-    output_ << ") = 0;" << '\n';
+    func->declare(output_);
   }
   output_ << '}' << ";" << '\n';
 }

@@ -18,7 +18,7 @@ class Action {
   virtual void prematch(Output& output) const = 0;
   virtual std::string match(size_t index, 
                             const Rule& rule, 
-                            const Token& token) const = 0;
+                            const Token& token) = 0;
   virtual std::string postmatch(Parser& parser) const = 0;
 
   std::string toString() const {
@@ -41,7 +41,7 @@ class Action::Arg
   void prematch(Output& output) const override;
   std::string match(size_t index, 
                     const Rule& rule, 
-                    const Token& token) const override;
+                    const Token& token) override;
   std::string postmatch(Parser& parser) const override;
 };
 /***********************************************************************//**
@@ -60,7 +60,7 @@ class Action::Const
   void prematch(Output& output) const override;
   std::string match(size_t index, 
                     const Rule& rule, 
-                    const Token& token) const override;
+                    const Token& token) override;
   std::string postmatch(Parser& parser) const override;
 };
 /***********************************************************************//**
@@ -72,6 +72,7 @@ class Action::Func
  private:
   std::string name_;
   std::vector<int> args_;
+  std::vector<std::type_index> types_;
 
  public:
   Func(const std::string& name, const std::vector<int>& args);
@@ -88,6 +89,8 @@ class Action::Func
   void prematch(Output& output) const override;
   std::string match(size_t index, 
                     const Rule& rule, 
-                    const Token& token) const override;
+                    const Token& token) override;
   std::string postmatch(Parser& parser) const override;
+
+  void declare(Output& output) const;
 };
