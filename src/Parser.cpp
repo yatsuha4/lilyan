@@ -103,7 +103,7 @@ std::any Parser::onTokens(const std::any& _tokens) {
 std::any Parser::tokenRule(const std::any& _match, 
                            const std::any& _repeat) {
   auto match = std::any_cast<std::smatch>(_match);
-  auto name = match[1];
+  auto name = match[0];
   auto repeat = lilyan::Repeat::One;
   if(_repeat.has_value()) {
     auto string = std::any_cast<std::string>(_repeat);
