@@ -48,7 +48,7 @@ class Parser
   std::any onSemantics(const std::any&) override;
   std::any onSemantic(const std::any&, const std::any&) override;
   std::any onTokens(const std::any&) override;
-  std::any tokenRule(const std::any&) override;
+  std::any tokenRule(const std::any&, const std::any&) override;
   std::any tokenString(const std::any&) override;
   std::any tokenRegexp(const std::any&) override;
   std::any onActionRule(const std::any&, const std::any&) override;

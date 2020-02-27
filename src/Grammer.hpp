@@ -70,9 +70,10 @@ class Grammer : public lilyan::Parser {
     Match match;
     lilyan::Input _input(getInput());
     {
-      std::array<std::any, 1> _args;
-      if(getToken(std::regex(R"((\w+)([\?\*\+])?)"), &_args.at(0))) {
-        setMatch(match, std::make_shared<lilyan::Action>("tokenRule", [this, _args]() { return tokenRule(eval(_args.at(0))); }));
+      std::array<std::any, 2> _args;
+      if(getToken(std::regex(R"(\w+)"), &_args.at(0)) &&
+         isMatch(lilyan::Repeat::ZeroOne, [this](std::any* r) { return token_r(r); }, &_args.at(1))) {
+        setMatch(match, std::make_shared<lilyan::Action>("tokenRule", [this, _args]() { return tokenRule(eval(_args.at(0)), eval(_args.at(1))); }));
       }
       getInput() = _input;
     }
@@ -94,6 +95,32 @@ class Grammer : public lilyan::Parser {
       std::array<std::any, 1> _args;
       if(getToken(std::string("//"), &_args.at(0))) {
         setMatch(match, std::make_shared<lilyan::Action>("tokenRegexp", [this, _args]() { return tokenRegexp(eval(_args.at(0))); }));
+      }
+      getInput() = _input;
+    }
+    return applyMatch(match, result);
+  }
+  bool token_r(std::any* result = nullptr) {
+    Match match;
+    lilyan::Input _input(getInput());
+    {
+      std::array<std::any, 1> _args;
+      if(getToken(std::string("?"), &_args.at(0))) {
+        setMatch(match, _args.at(0));
+      }
+      getInput() = _input;
+    }
+    {
+      std::array<std::any, 1> _args;
+      if(getToken(std::string("*"), &_args.at(0))) {
+        setMatch(match, _args.at(0));
+      }
+      getInput() = _input;
+    }
+    {
+      std::array<std::any, 1> _args;
+      if(getToken(std::string("+"), &_args.at(0))) {
+        setMatch(match, _args.at(0));
       }
       getInput() = _input;
     }
@@ -167,7 +194,7 @@ class Grammer : public lilyan::Parser {
   virtual std::any onSemantics(const std::any&) = 0;
   virtual std::any onSemantic(const std::any&, const std::any&) = 0;
   virtual std::any onTokens(const std::any&) = 0;
-  virtual std::any tokenRule(const std::any&) = 0;
+  virtual std::any tokenRule(const std::any&, const std::any&) = 0;
   virtual std::any tokenString(const std::any&) = 0;
   virtual std::any tokenRegexp(const std::any&) = 0;
   virtual std::any onActionRule(const std::any&, const std::any&) = 0;
