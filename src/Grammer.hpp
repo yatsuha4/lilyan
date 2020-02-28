@@ -72,7 +72,7 @@ class Grammer : public lilyan::Parser {
     {
       std::array<std::any, 2> args;
       if(getToken(std::regex(R"(\w+)"), &args.at(0)) &&
-         isMatch(lilyan::Repeat::ZeroOne, [this](std::any* r) { return rule_token_r(r); }, &args.at(1))) {
+         (rule_token_r(&args.at(1)) || true)) {
         setMatch(match, std::make_shared<lilyan::Action>("tokenRule", [this, args]() { return tokenRule(std::any_cast<std::smatch>(args.at(0)), eval(args.at(1))); }));
       }
       getInput() = input;
