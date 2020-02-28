@@ -18,7 +18,7 @@ Parser::Parser()
 void Parser::parse(const std::string& file) {
   if(getInput().read(file)) {
     std::any result;
-    if(rules(&result)) {
+    if(rule_rules(&result)) {
       //dump(std::cout, result);
       result = eval(result);
       auto rules = std::any_cast<std::shared_ptr<Rules>>(result);
