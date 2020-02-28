@@ -36,7 +36,7 @@ void Semantic::putCpp(Parser& parser, const Rule& rule) const {
   output << ") " << '{';
   output << "setMatch(match, " << action_->postmatch(parser) << ");" << '\n';
   output << '}' << '\n';
-  output << "getInput() = _input;" << '\n';
+  output << "getInput() = input;" << '\n';
   output << '}' << '\n';
 }
 /***********************************************************************//**
