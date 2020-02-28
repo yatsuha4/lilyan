@@ -56,6 +56,9 @@ class Token::Rule
   std::string toString() const override;
   std::string toCpp(const ::Rule& rule, 
                     const std::string& arg) const override;
+
+ private:
+  std::string callFunc(const std::string& arg) const;
 };
 /***********************************************************************//**
 	@brief 

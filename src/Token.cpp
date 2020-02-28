@@ -58,31 +58,46 @@ std::string Token::Rule::toCpp(const ::Rule& rule,
       stream << "true";
     }
   }
-  else if(repeat_ == lilyan::Repeat::One) {
-    stream << getValue();
-    if(arg.empty()) {
-      stream << "()";
-    }
-    else {
-      stream << "(&" << arg << ")";
-    }
-  }
   else {
-    static const char* REPEATS[] = {
-      "One", 
-      "OneAny", 
-      "ZeroAny", 
-      "ZeroOne"
-    };
-    stream << "isMatch(lilyan::Repeat::"
-           << REPEATS[static_cast<size_t>(repeat_)]
-           << ", [this](std::any* r) { return "
-           << getValue() << "(r); }";
-    if(!arg.empty()) {
-      stream << ", &" << arg;
+    switch(repeat_) {
+    case lilyan::Repeat::One:
+      stream << callFunc(arg);
+      break;
+    case lilyan::Repeat::ZeroOne:
+      stream << "(" << callFunc(arg) << " || true)";
+      break;
+    default:
+      {
+        static const char* REPEATS[] = {
+          "One", 
+          "OneAny", 
+          "ZeroAny", 
+          "ZeroOne"
+        };
+        stream << "isMatch(lilyan::Repeat::"
+               << REPEATS[static_cast<size_t>(repeat_)]
+               << ", [this](std::any* r) { return "
+               << getValue() << "(r); }";
+        if(!arg.empty()) {
+          stream << ", &" << arg;
+        }
+        stream << ")";
+      }
+      break;
     }
-    stream << ")";
   }
+  return stream.str();
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+std::string Token::Rule::callFunc(const std::string& arg) const {
+  std::ostringstream stream;
+  stream << getValue() << "(";
+  if(!arg.empty()) {
+    stream << "&" << arg;
+  }
+  stream << ")";
   return stream.str();
 }
 /***********************************************************************//**
