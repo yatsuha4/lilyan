@@ -58,6 +58,15 @@ std::string Token::Rule::toCpp(const ::Rule& rule,
       stream << "true";
     }
   }
+  else if(repeat_ == lilyan::Repeat::One) {
+    stream << getValue();
+    if(arg.empty()) {
+      stream << "()";
+    }
+    else {
+      stream << "(&" << arg << ")";
+    }
+  }
   else {
     static const char* REPEATS[] = {
       "One", 
