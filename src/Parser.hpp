@@ -16,6 +16,7 @@ class Parser
 
  private:
   std::string className_;
+  std::string rulePrefix_;
   Output output_;
   std::vector<std::shared_ptr<Action::Func>> actionFuncs_;
 

@@ -8,7 +8,8 @@
 	@brief コンストラクタ
 ***************************************************************************/
 Parser::Parser()
-  : className_("Parser")
+  : className_("Parser"), 
+    rulePrefix_("rule_")
 {
 }
 /***********************************************************************//**
@@ -60,10 +61,10 @@ std::any Parser::onRules(const std::any& _rules) {
 	@brief 
 ***************************************************************************/
 std::any Parser::onRule(const std::smatch& _name, const std::any& _semantics) {
-  auto name = _name[0];
+  auto name = rulePrefix_ + _name[0].str();
   auto semantics = std::any_cast<std::shared_ptr<Semantics>>(_semantics);
   auto rule = std::make_shared<Rule>(name, *semantics);
-  std::cout << rule->toString();
+  //std::cout << rule->toString();
   return rule;
 }
 /***********************************************************************//**
@@ -102,12 +103,11 @@ std::any Parser::onTokens(const std::any& _tokens) {
 ***************************************************************************/
 std::any Parser::tokenRule(const std::smatch& _name, 
                            const std::any& _repeat) {
-  auto name = _name[0];
   auto repeat = _repeat.has_value()
     ? std::any_cast<lilyan::Repeat>(_repeat)
     : lilyan::Repeat::One;
   return std::static_pointer_cast<Token>
-    (std::make_shared<Token::Rule>(name, repeat));
+    (std::make_shared<Token::Rule>(rulePrefix_ + _name[0].str(), repeat));
 }
 /***********************************************************************//**
 	@brief 
@@ -128,7 +128,7 @@ std::any Parser::tokenRegexp(const std::string& regexp) {
 ***************************************************************************/
 std::any Parser::onActionRule(const std::smatch& _name, const std::any& _args) {
   auto action = 
-    std::make_shared<Action::Func>(_name[0], 
+    std::make_shared<Action::Func>(_name[0].str(), 
                                    std::any_cast<std::vector<int>>(_args));
   if(std::find_if(actionFuncs_.begin(), actionFuncs_.end(), 
                   [&](const auto& iter) {
