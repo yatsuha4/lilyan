@@ -86,6 +86,10 @@ class Action::Func
     return args_;
   }
 
+  const auto& getTypes() const {
+    return types_;
+  }
+
   void prematch(Output& output) const override;
   std::string match(size_t index, 
                     const Rule& rule, 

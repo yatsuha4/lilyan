@@ -130,12 +130,7 @@ std::any Parser::onActionRule(const std::smatch& _name, const std::any& _args) {
   auto action = 
     std::make_shared<Action::Func>(_name[0].str(), 
                                    std::any_cast<std::vector<int>>(_args));
-  if(std::find_if(actionFuncs_.begin(), actionFuncs_.end(), 
-                  [&](const auto& iter) {
-                    return iter->getName() == action->getName();
-                  }) == actionFuncs_.end()) {
-    actionFuncs_.push_back(action);
-  }
+  actionFuncs_.push_back(action);
   return std::static_pointer_cast<Action>(action);
 }
 /***********************************************************************//**
@@ -182,8 +177,14 @@ void Parser::putCpp(const Rules& rules) {
   output_ << '-' << "protected:" << '\n';
   output_ << className_ << "() = default;" << '\n';
   output_ << "~" << className_ << "() override = default;" << '\n';
-  for(auto& func : actionFuncs_) {
-    func->declare(output_);
+  for(auto func = actionFuncs_.begin(); func != actionFuncs_.end(); func++) {
+    if(std::find_if(actionFuncs_.begin(), func, 
+                    [&](const auto& iter) {
+                      return iter->getName() == (*func)->getName() && 
+                        iter->getTypes() == (*func)->getTypes();
+                    }) == func) {
+      (*func)->declare(output_);
+    }
   }
   output_ << '}' << ";" << '\n';
 }
