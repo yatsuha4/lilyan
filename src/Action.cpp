@@ -15,7 +15,7 @@ Action::Arg::Arg(int index)
 	@brief 
 ***************************************************************************/
 void Action::Arg::prematch(Output& output) const {
-  output << "std::any _arg;" << '\n';
+  output << "std::any arg;" << '\n';
 }
 /***********************************************************************//**
 	@brief 
@@ -23,13 +23,13 @@ void Action::Arg::prematch(Output& output) const {
 std::string Action::Arg::match(size_t index, 
                                const Rule& rule, 
                                const Token& token) {
-  return token.toCpp(rule, (index + 1 == index_) ? "_arg" : "");
+  return token.toCpp(rule, (index + 1 == index_) ? "arg" : "");
 }
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
 std::string Action::Arg::postmatch(Parser& parser) const {
-  return "_arg";
+  return "arg";
 }
 /***********************************************************************//**
 	@brief 
@@ -71,7 +71,7 @@ Action::Func::Func(const std::string& name, const std::vector<int>& args)
 ***************************************************************************/
 void Action::Func::prematch(Output& output) const {
   if(!args_.empty()) {
-    output << "std::array<std::any, " << args_.size() << "> _args;" << '\n';
+    output << "std::array<std::any, " << args_.size() << "> args;" << '\n';
   }
 }
 /***********************************************************************//**
@@ -84,7 +84,7 @@ std::string Action::Func::match(size_t index,
   if(iter != args_.end()) {
     auto index = iter - args_.begin();
     std::ostringstream arg;
-    arg << "_args.at(" << index << ")";
+    arg << "args.at(" << index << ")";
     types_[index] = typeid(token);
     return token.toCpp(rule, arg.str());
   }
@@ -98,7 +98,7 @@ std::string Action::Func::postmatch(Parser& parser) const {
   stream << "std::make_shared<lilyan::Action>(\"" << name_
          << "\", [this";
   if(!args_.empty()) {
-    stream << ", _args";
+    stream << ", args";
   }
   stream << "]() { return " << name_ << "(";
   for(size_t i = 0; i < args_.size(); i++) {
@@ -114,7 +114,7 @@ std::string Action::Func::postmatch(Parser& parser) const {
     else {
       stream << "eval";
     }
-    stream << "(_args.at(" << i << "))";
+    stream << "(args.at(" << i << "))";
   }
   stream << "); })";
   return stream.str();
