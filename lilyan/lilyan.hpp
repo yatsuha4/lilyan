@@ -9,6 +9,8 @@
 #include <array>
 #include <cassert>
 #include <fstream>
+#include <iostream>
+#include <optional>
 #include <regex>
 #include <sstream>
 #include <string>
