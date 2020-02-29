@@ -1,5 +1,5 @@
 main:
-  expr -> $1
+  expr* -> $1
   ;
 
 expr:
@@ -17,4 +17,5 @@ term:
 number:
   /\d+/ -> onNumber($1)
   '(' expr ')' -> $2
+  '-' expr -> onMinus($2)
   ;

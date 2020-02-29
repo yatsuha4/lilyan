@@ -22,4 +22,5 @@ class Parser
   std::any onMul(const std::any&, const std::any&) override;
   std::any onDiv(const std::any&, const std::any&) override;
   std::any onNumber(const std::smatch&) override;
+  std::any onMinus(const std::any&) override;
 };

@@ -43,3 +43,9 @@ std::any Parser::onDiv(const std::any& lhs, const std::any& rhs) {
 std::any Parser::onNumber(const std::smatch& value) {
   return std::stoi(value[0].str());
 }
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+std::any Parser::onMinus(const std::any& value) {
+  return -std::any_cast<int>(value);
+}

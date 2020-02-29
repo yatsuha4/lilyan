@@ -6,7 +6,7 @@ class Grammer : public lilyan::Parser {
     lilyan::Input input(getInput());
     {
       std::any arg;
-      if(rule_expr(&arg)) {
+      if(isMatch(lilyan::Repeat::ZeroAny, [this](std::any* r) { return rule_expr(r); }, &arg)) {
         setMatch(match, arg);
       }
       getInput() = input;
@@ -114,6 +114,14 @@ class Grammer : public lilyan::Parser {
       }
       getInput() = input;
     }
+    {
+      std::array<std::any, 1> args;
+      if(getToken(std::string("-")) &&
+         rule_expr(&args.at(0))) {
+        setMatch(match, std::make_shared<lilyan::Action>("onMinus", [this, args]() { return onMinus(eval(args.at(0))); }));
+      }
+      getInput() = input;
+    }
     return applyMatch(match, result);
   }
  protected:
@@ -124,4 +132,5 @@ class Grammer : public lilyan::Parser {
   virtual std::any onMul(const std::any&, const std::any&) = 0;
   virtual std::any onDiv(const std::any&, const std::any&) = 0;
   virtual std::any onNumber(const std::smatch&) = 0;
+  virtual std::any onMinus(const std::any&) = 0;
 };

@@ -11,7 +11,11 @@ int main(int argc, const char** argv) {
   while(std::getline(std::cin, line)) {
     std::cout << ">" << line << std::endl;
     std::any result = parser.parse(line);
-    std::cout << "=> " << std::any_cast<int>(result) << std::endl;
+    std::cout << "=>";
+    for(auto& value : std::any_cast<std::vector<std::any>>(result)) {
+      std::cout << " " << std::any_cast<int>(value);
+    }
+    std::cout << std::endl;
   }
   return 0;
 }
