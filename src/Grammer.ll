@@ -32,7 +32,7 @@ token_r:
   ;
 
 action:
-  /\w+/ '(' args ')' -> onActionRule($1, $3)
+  /\w+/ '(' args? ')' -> onActionRule($1, $3)
   '<' /[\w:]+/ '>' -> onActionConst($2)
   arg -> onActionArg($1)
   ;
