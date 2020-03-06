@@ -1,5 +1,5 @@
 rules:
-  rule* -> onRules($1)
+  rule* <<EOF>> -> onRules($1)
   ;
 
 rule:
