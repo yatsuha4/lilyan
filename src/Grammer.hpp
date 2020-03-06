@@ -6,7 +6,8 @@ class Grammer : public lilyan::Parser {
     lilyan::Input input(getInput());
     {
       std::array<std::any, 1> args;
-      if(isMatch(lilyan::Repeat::ZeroAny, [this](std::any* r) { return rule_rule(r); }, &args.at(0))) {
+      if(isMatch(lilyan::Repeat::ZeroAny, [this](std::any* r) { return rule_rule(r); }, &args.at(0)) &&
+         isEof()) {
         setMatch(match, std::make_shared<lilyan::Action>("onRules", [this, args]() { return onRules(eval(args.at(0))); }));
       }
       getInput() = input;
