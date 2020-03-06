@@ -36,6 +36,18 @@ void Parser::parse(const std::filesystem::path& path) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
+bool Parser::skip() {
+  while(super::skip()) {
+    if(!getInput().match(std::regex("/\\*[\\s\\S]*?\\*/")).has_value() && 
+       !getInput().match(std::regex("//.*")).has_value()) {
+      return true;
+    }
+  }
+  return false;
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
 std::any Parser::onGetToken(const std::string& pattern) {
   if(pattern == "''") {
     return getInput().getString("'", "'");

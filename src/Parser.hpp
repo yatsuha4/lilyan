@@ -40,6 +40,8 @@ class Parser
   void parse(const std::filesystem::path& path);
   void puts(const std::string& text);
 
+  bool skip() override;
+
  protected:
   std::any onGetToken(const std::string& pattern) override;
 

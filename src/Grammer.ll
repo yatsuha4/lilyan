@@ -1,3 +1,6 @@
+/*
+  Grammer of lilyan
+*/
 rules:
   rule* <<EOF>> -> onRules($1)
   ;
@@ -27,15 +30,15 @@ token:
   ;
 
 token_r:
-  '?' -> <lilyan::Repeat::ZeroOne>
-  '*' -> <lilyan::Repeat::ZeroAny>
-  '+' -> <lilyan::Repeat::OneAny>
+  '?' -> <lilyan::Repeat::ZeroOne>		// 0~1
+  '*' -> <lilyan::Repeat::ZeroAny>		// 0~
+  '+' -> <lilyan::Repeat::OneAny>		// 1~
   ;
 
 action:
-  /\w+/ '(' args? ')' -> onActionRule($1, $3)
-  '<' /[\w:]+/ '>' -> onActionConst($2)
-  arg -> onActionArg($1)
+  /\w+/ '(' args? ')' -> onActionRule($1, $3)	// ルール
+  '<' /[\w:]+/ '>' -> onActionConst($2)		// 定数
+  arg -> onActionArg($1)			// 引数そのまま
   ;
 
 args:
