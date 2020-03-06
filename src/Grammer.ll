@@ -19,6 +19,7 @@ tokens:
   ;
 
 token:
+  "<<EOF>>" -> tokenEof()
   /\w+/ token_r? -> tokenRule($1, $2)
   "''" -> tokenString($1)
   '""' -> tokenString($1)
