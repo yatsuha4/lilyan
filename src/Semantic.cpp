@@ -34,7 +34,7 @@ void Semantic::putCpp(Parser& parser, const Rule& rule) const {
     output << action_->match(i, rule, *tokens_->at(i));
   }
   output << ") " << '{';
-  output << "setMatch(match, " << action_->postmatch(parser) << ");" << '\n';
+  rule.onMatch(parser, action_->postmatch(parser));
   output << '}' << '\n';
   output << "getInput() = input;" << '\n';
   output << '}' << '\n';

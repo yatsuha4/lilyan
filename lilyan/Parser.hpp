@@ -13,11 +13,6 @@ namespace lilyan {
 ***************************************************************************/
 class Parser {
  protected:
-  struct Match {
-    std::optional<std::any> value;
-    std::shared_ptr<Input> input;
-  };
-
  private:
   std::shared_ptr<Input> input_;
   std::shared_ptr<Input> arrival_;
@@ -174,27 +169,6 @@ class Parser {
   std::any checkValue(const std::any& value) {
     assert(value.has_value());
     return value;
-  }
-
-  void setMatch(Match& match, const std::any& value) {
-    if(match.value) {
-      warning("conflict rule");
-    }
-    else {
-      match.value = value;
-      match.input = std::make_shared<Input>(getInput());
-    }
-  }
-
-  bool applyMatch(const Match& match, std::any* result) {
-    if(match.value) {
-      if(result) {
-        *result = *match.value;
-      }
-      input_ = match.input;
-      return true;
-    }
-    return false;
   }
 
   bool isMatch(Repeat repeat, 

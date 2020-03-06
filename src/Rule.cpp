@@ -43,7 +43,6 @@ void Rule::putCpp(Parser& parser) const {
     throw lilyan::Error(stream.str());
   }
   output << "bool " << name_ << "(std::any* result = nullptr) " << '{';
-  output << "Match match;" << '\n';
   output << "lilyan::Input input(getInput());" << '\n';
   for(auto& semantic : semantics_) {
     semantic->putCpp(parser, *this);
@@ -56,7 +55,7 @@ void Rule::putCpp(Parser& parser) const {
            << "return false;" << '\n';
   }
   else {
-    output << "return applyMatch(match, result);" << '\n';
+    output << "return false;" << '\n';
   }
   output << '}' << '\n';
   if(hasRecursive()) {
@@ -80,16 +79,17 @@ void Rule::putCpp(Parser& parser) const {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::string Rule::getReturn(const std::string& value) const {
-  std::ostringstream stream;
+void Rule::onMatch(Parser& parser, const std::string& value) const {
+  auto& output = parser.getOutput();
   if(hasRecursive()) {
-    //stream << name_ << "(" << value << ")";
-    stream << name_ << "(*match.value)";
+    output << "return " << name_ << "(" << value << ", result);";
   }
   else {
-    stream << "true";
+    output << "if(result) " << '{'
+           << "*result = " << value << ";" << '\n'
+           << '}' << '\n'
+           << "return true;" << '\n';
   }
-  return stream.str();
 }
 /***********************************************************************//**
 	@brief 
