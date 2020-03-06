@@ -20,8 +20,7 @@ void Parser::parse(const std::filesystem::path& path) {
     std::any result;
     if(rule_rules(&result)) {
       //dump(std::cout, result);
-      result = eval(result);
-      auto rules = std::any_cast<std::shared_ptr<Rules>>(result);
+      auto rules = eval<std::shared_ptr<Rules>>(result);
       putCpp(*rules);
     }
     else {
@@ -54,7 +53,7 @@ std::any Parser::onGetToken(const std::string& pattern) {
 ***************************************************************************/
 std::any Parser::onRules(const std::any& _rules) {
   auto rules = std::make_shared<Rules>();
-  for(auto& _rule : std::any_cast<std::vector<std::any>>(_rules)) {
+  for(auto& _rule : eval<std::vector<std::any>>(_rules)) {
     auto rule = std::any_cast<std::shared_ptr<Rule>>(_rule);
     rules->push_back(rule);
   }
@@ -65,7 +64,7 @@ std::any Parser::onRules(const std::any& _rules) {
 ***************************************************************************/
 std::any Parser::onRule(const std::smatch& _name, const std::any& _semantics) {
   auto name = rulePrefix_ + _name[0].str();
-  auto semantics = std::any_cast<std::shared_ptr<Semantics>>(_semantics);
+  auto semantics = eval<std::shared_ptr<Semantics>>(_semantics);
   auto rule = std::make_shared<Rule>(name, *semantics);
   //std::cout << rule->toString();
   return rule;
@@ -75,7 +74,7 @@ std::any Parser::onRule(const std::smatch& _name, const std::any& _semantics) {
 ***************************************************************************/
 std::any Parser::onSemantics(const std::any& _semantics) {
   auto semantics = std::make_shared<Semantics>();
-  for(auto& _semantic : std::any_cast<std::vector<std::any>>(_semantics)) {
+  for(auto& _semantic : eval<std::vector<std::any>>(_semantics)) {
     auto semantic = std::any_cast<std::shared_ptr<Semantic>>(_semantic);
     semantics->push_back(semantic);
   }
@@ -85,8 +84,8 @@ std::any Parser::onSemantics(const std::any& _semantics) {
 	@brief 
 ***************************************************************************/
 std::any Parser::onSemantic(const std::any& _tokens, const std::any& _action) {
-  auto tokens = std::any_cast<std::shared_ptr<Tokens>>(_tokens);
-  auto action = std::any_cast<std::shared_ptr<Action>>(_action);
+  auto tokens = eval<std::shared_ptr<Tokens>>(_tokens);
+  auto action = eval<std::shared_ptr<Action>>(_action);
   auto semantic = std::make_shared<Semantic>(tokens, action);
   return semantic;
 }
@@ -95,7 +94,7 @@ std::any Parser::onSemantic(const std::any& _tokens, const std::any& _action) {
 ***************************************************************************/
 std::any Parser::onTokens(const std::any& _tokens) {
   auto tokens = std::make_shared<Tokens>();
-  for(auto& _token : std::any_cast<std::vector<std::any>>(_tokens)) {
+  for(auto& _token : eval<std::vector<std::any>>(_tokens)) {
     auto token = std::any_cast<std::shared_ptr<Token>>(_token);
     tokens->push_back(token);
   }
@@ -113,7 +112,7 @@ std::any Parser::tokenEof() {
 std::any Parser::tokenRule(const std::smatch& _name, 
                            const std::any& _repeat) {
   auto repeat = _repeat.has_value()
-    ? std::any_cast<lilyan::Repeat>(_repeat)
+    ? eval<lilyan::Repeat>(_repeat)
     : lilyan::Repeat::One;
   return std::static_pointer_cast<Token>
     (std::make_shared<Token::Rule>(rulePrefix_ + _name[0].str(), repeat));
@@ -138,7 +137,7 @@ std::any Parser::tokenRegexp(const std::string& regexp) {
 std::any Parser::onActionRule(const std::smatch& _name, 
                               const std::any& _args) {
   auto args = _args.has_value()
-    ? std::any_cast<std::vector<int>>(_args)
+    ? eval<std::vector<int>>(_args)
     : std::vector<int>();
   auto action = std::make_shared<Action::Func>(_name[0].str(), args);
   actionFuncs_.push_back(action);
@@ -156,15 +155,15 @@ std::any Parser::onActionConst(const std::smatch& match) {
 ***************************************************************************/
 std::any Parser::onActionArg(const std::any& _arg) {
   return std::static_pointer_cast<Action>
-    (std::make_shared<Action::Arg>(std::any_cast<int>(_arg)));
+    (std::make_shared<Action::Arg>(eval<int>(_arg)));
 }
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
 std::any Parser::onArgs(const std::any& _arg, const std::any& _args_r) {
   std::vector<int> list;
-  list.push_back(std::any_cast<int>(_arg));
-  for(auto& iter : std::any_cast<std::vector<std::any>>(_args_r)) {
+  list.push_back(eval<int>(_arg));
+  for(auto& iter : eval<std::vector<std::any>>(_args_r)) {
     list.push_back(std::any_cast<int>(iter));
   }
   return list;

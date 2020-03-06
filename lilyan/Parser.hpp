@@ -55,19 +55,9 @@ class Parser {
     }
   }
 
-  std::any eval(const std::any& value) {
-    if(value.type() == typeid(std::shared_ptr<Action>)) {
-      auto action = std::any_cast<std::shared_ptr<Action>>(value);
-      return action->func();
-    }
-    else if(value.type() == typeid(std::vector<std::any>)) {
-      std::vector<std::any> list;
-      for(auto& iter : std::any_cast<std::vector<std::any>>(value)) {
-        list.push_back(eval(iter));
-      }
-      return list;
-    }
-    return value;
+  template <class T>
+  T eval(const std::any& value) {
+    return std::any_cast<T>(evalValue(value));
   }
 
   void dump(std::ostream& output, 
@@ -232,6 +222,20 @@ class Parser {
     return false;
   }
 
+  std::any evalValue(const std::any& value) {
+    if(value.type() == typeid(std::shared_ptr<Action>)) {
+      auto action = std::any_cast<std::shared_ptr<Action>>(value);
+      return action->func();
+    }
+    else if(value.type() == typeid(std::vector<std::any>)) {
+      std::vector<std::any> list;
+      for(auto& iter : std::any_cast<std::vector<std::any>>(value)) {
+        list.push_back(evalValue(iter));
+      }
+      return list;
+    }
+    return value;
+  }
 };
 /***********************************************************************//**
 	$Id$
