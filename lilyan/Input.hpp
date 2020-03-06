@@ -14,12 +14,14 @@ class Input {
   size_t pos_;
   size_t x_;
   size_t y_;
+  size_t head_;
 
  public:
   Input()
     : pos_(0), 
       x_(0), 
-      y_(0)
+      y_(1), 
+      head_(0)
   {}
   Input(const Input& src) = default;
   ~Input() = default;
@@ -44,7 +46,8 @@ class Input {
     text_ = text;
     pos_ = 0;
     x_ = 0;
-    y_ = 0;
+    y_ = 1;
+    head_ = 0;
   }
 
   char fetch(size_t offset = 0) const {
@@ -102,6 +105,7 @@ class Input {
       if(fetch(i) == '\n') {
         x_ = 0;
         y_++;
+        head_ = pos_ + i + 1;
       }
       else {
         x_++;
@@ -116,7 +120,15 @@ class Input {
 
   std::string toString() const {
     std::ostringstream stream;
-    stream << y_ << ":" << x_ << " '" << text_->substr(pos_, 20) << "'";
+    stream << y_ << ":" << x_;
+    if(text_) {
+      auto len = text_->find_first_of("\n", head_);
+      if(len != std::string::npos) {
+        len -= head_;
+      }
+      stream << std::endl << text_->substr(head_, len)
+             << std::endl << std::string(x_, ' ') << "^";
+    }
     return stream.str();
   }
 };
