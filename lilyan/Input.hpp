@@ -9,16 +9,22 @@ namespace lilyan {
 ***************************************************************************/
 class Input {
  private:
-  std::shared_ptr<const std::string> name_;
+  std::shared_ptr<Input> parent_;
   std::shared_ptr<const std::string> text_;
+  std::shared_ptr<const std::string> name_;
   size_t pos_;
   size_t x_;
   size_t y_;
   size_t head_;
 
  public:
-  Input()
-    : pos_(0), 
+  Input(const std::shared_ptr<Input>& parent, 
+        const std::shared_ptr<const std::string>& text, 
+        const std::shared_ptr<const std::string>& name)
+    : parent_(parent), 
+      text_(text), 
+      name_(name), 
+      pos_(0), 
       x_(0), 
       y_(1), 
       head_(0)
@@ -26,26 +32,8 @@ class Input {
   Input(const Input& src) = default;
   ~Input() = default;
 
-  bool read(const std::string& name) {
-    std::ifstream stream(name);
-    if(!stream.fail()) {
-      set(name, 
-          std::make_shared<std::string>
-          (std::istreambuf_iterator<char>(stream), 
-           std::istreambuf_iterator<char>()));
-      return true;
-    }
-    return false;
-  }
-
-  void set(const std::string& name, 
-           const std::shared_ptr<const std::string>& text) {
-    name_ = std::make_shared<std::string>(name);
-    text_ = text;
-    pos_ = 0;
-    x_ = 0;
-    y_ = 1;
-    head_ = 0;
+  const auto& getParent() const {
+    return parent_;
   }
 
   char fetch(size_t offset = 0) const {

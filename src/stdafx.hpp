@@ -4,7 +4,6 @@
 #pragma once
 
 #include <iostream>
-#include <map>
 #include <typeindex>
 
 #include "lilyan/lilyan.hpp"

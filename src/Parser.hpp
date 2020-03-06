@@ -37,7 +37,7 @@ class Parser
     return output_;
   }
 
-  void parse(const std::string& file);
+  void parse(const std::filesystem::path& path);
   void puts(const std::string& text);
 
  protected:

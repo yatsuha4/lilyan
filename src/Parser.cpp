@@ -15,8 +15,8 @@ Parser::Parser()
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-void Parser::parse(const std::string& file) {
-  if(getInput().read(file)) {
+void Parser::parse(const std::filesystem::path& path) {
+  if(pushInput(path)) {
     std::any result;
     if(rule_rules(&result)) {
       //dump(std::cout, result);
@@ -30,7 +30,7 @@ void Parser::parse(const std::string& file) {
   }
   else {
     std::ostringstream stream;
-    stream << "read error, '" << file << "'";
+    stream << "read error, '" << path << "'";
     error(stream.str());
   }
 }

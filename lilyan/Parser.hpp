@@ -15,14 +15,51 @@ class Parser {
  protected:
   struct Match {
     std::optional<std::any> value;
-    Input input;
+    std::shared_ptr<Input> input;
   };
 
  private:
-  Input input_;
-  Input arrival_;
+  std::shared_ptr<Input> input_;
+  std::shared_ptr<Input> arrival_;
+  std::map<std::string, std::shared_ptr<const std::string>> cache_;
 
  public:
+  bool pushInput(const std::filesystem::path& path) {
+    auto name = path.native();
+    if(auto iter = cache_.find(name); iter != cache_.end()) {
+      pushInput(iter->second, std::make_shared<std::string>(name));
+    }
+    else {
+      std::ifstream stream(path);
+      if(!stream.fail()) {
+        auto text = std::make_shared<std::string>
+          (std::istreambuf_iterator<char>(stream), 
+           std::istreambuf_iterator<char>());
+        cache_.insert(std::make_pair(name, text));
+        pushInput(text, std::make_shared<std::string>(name));
+      }
+      else {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void pushInput(const std::shared_ptr<const std::string>& text, 
+                 const std::shared_ptr<const std::string>& name = nullptr) {
+    input_ = std::make_shared<Input>(input_, text, name);
+  }
+
+  void popInput() {
+    assert(input_);
+    if(auto parent = input_->getParent()) {
+      input_ = std::make_shared<Input>(*parent);
+    }
+    else {
+      input_.reset();
+    }
+  }
+
   std::any eval(const std::any& value) {
     if(value.type() == typeid(std::shared_ptr<Action>)) {
       auto action = std::any_cast<std::shared_ptr<Action>>(value);
@@ -79,7 +116,10 @@ class Parser {
 
   virtual void error(const std::string& message) {
     std::ostringstream stream;
-    stream << message << " at " << arrival_.toString();
+    stream << message;
+    if(arrival_) {
+      stream << " at " << arrival_->toString();
+    }
     throw Error(stream.str());
   }
 
@@ -91,8 +131,8 @@ class Parser {
   Parser() = default;
   virtual ~Parser() = default;
 
-  Input& getInput() {
-    return input_;
+  Input& getInput() const {
+    return *input_;
   }
 
   bool append(List& list, const std::any& value) {
@@ -121,17 +161,17 @@ class Parser {
 
   virtual bool skip() {
     for(size_t i = 0;; i++) {
-      auto c = input_.fetch(i);
+      auto c = input_->fetch(i);
       if(c == '\0') {
         return false;
       }
       else if(c < '\0' || c > ' ') {
-        input_.seek(i);
+        input_->seek(i);
         break;
       }
     }
-    if(arrival_ < input_) {
-      arrival_ = input_;
+    if(!arrival_ || *arrival_ < *input_) {
+      arrival_ = std::make_shared<Input>(*input_);
     }
     return true;
   }
@@ -147,7 +187,7 @@ class Parser {
     }
     else {
       match.value = value;
-      match.input = getInput();
+      match.input = std::make_shared<Input>(getInput());
     }
   }
 
@@ -156,7 +196,7 @@ class Parser {
       if(result) {
         *result = *match.value;
       }
-      getInput() = match.input;
+      input_ = match.input;
       return true;
     }
     return false;
