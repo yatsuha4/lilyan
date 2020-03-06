@@ -126,10 +126,12 @@ std::any Parser::tokenRegexp(const std::string& regexp) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
-std::any Parser::onActionRule(const std::smatch& _name, const std::any& _args) {
-  auto action = 
-    std::make_shared<Action::Func>(_name[0].str(), 
-                                   std::any_cast<std::vector<int>>(_args));
+std::any Parser::onActionRule(const std::smatch& _name, 
+                              const std::any& _args) {
+  auto args = _args.has_value()
+    ? std::any_cast<std::vector<int>>(_args)
+    : std::vector<int>();
+  auto action = std::make_shared<Action::Func>(_name[0].str(), args);
   actionFuncs_.push_back(action);
   return std::static_pointer_cast<Action>(action);
 }
