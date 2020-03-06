@@ -7,6 +7,14 @@
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
+std::string Action::GetArg(size_t index) {
+  std::ostringstream stream;
+  stream << "args.at(" << index << ")";
+  return stream.str();
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
 Action::Arg::Arg(int index)
   : index_(index)
 {
@@ -83,10 +91,8 @@ std::string Action::Func::match(size_t index,
   auto iter = std::find(args_.begin(), args_.end(), index + 1);
   if(iter != args_.end()) {
     auto index = iter - args_.begin();
-    std::ostringstream arg;
-    arg << "args.at(" << index << ")";
     types_[index] = typeid(token);
-    return token.toCpp(rule, arg.str());
+    return token.toCpp(rule, GetArg(index));
   }
   return token.toCpp(rule, "");
 }
@@ -106,15 +112,14 @@ std::string Action::Func::postmatch(Parser& parser) const {
       stream << ", ";
     }
     if(types_[i] == typeid(Token::Regexp)) {
-      stream << "std::any_cast<std::smatch>";
+      stream << "std::any_cast<std::smatch>(" << GetArg(i) << ")";
     }
     else if(types_[i] == typeid(Token::String)) {
-      stream << "std::any_cast<std::string>";
+      stream << "std::any_cast<std::string>(" << GetArg(i) << ")";
     }
     else {
-      stream << "eval";
+      stream << GetArg(i);
     }
-    stream << "(args.at(" << i << "))";
   }
   stream << "); })";
   return stream.str();

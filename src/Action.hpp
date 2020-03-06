@@ -24,6 +24,8 @@ class Action {
   std::string toString() const {
     return "";
   }
+
+  static std::string GetArg(size_t index);
 };
 /***********************************************************************//**
 	@brief 
