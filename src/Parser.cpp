@@ -24,6 +24,9 @@ void Parser::parse(const std::string& file) {
       auto rules = std::any_cast<std::shared_ptr<Rules>>(result);
       putCpp(*rules);
     }
+    else {
+      error("syntax error");
+    }
   }
   else {
     std::ostringstream stream;

@@ -20,6 +20,7 @@ class Parser {
 
  private:
   Input input_;
+  Input arrival_;
 
  public:
   std::any eval(const std::any& value) {
@@ -78,7 +79,7 @@ class Parser {
 
   virtual void error(const std::string& message) {
     std::ostringstream stream;
-    stream << message << " at " << getInput().toString();
+    stream << message << " at " << arrival_.toString();
     throw Error(stream.str());
   }
 
@@ -128,6 +129,9 @@ class Parser {
         input_.seek(i);
         break;
       }
+    }
+    if(arrival_ < input_) {
+      arrival_ = input_;
     }
     return true;
   }

@@ -26,8 +26,6 @@ class Input {
   Input(const Input& src) = default;
   ~Input() = default;
 
-  //Input& operator=(const Input& src) = default;
-
   bool read(const std::string& name) {
     std::ifstream stream(name);
     if(!stream.fail()) {
@@ -130,6 +128,10 @@ class Input {
              << std::endl << std::string(x_, ' ') << "^";
     }
     return stream.str();
+  }
+
+  bool operator<(const Input& rhs) const {
+    return pos_ < rhs.pos_;
   }
 };
 /***********************************************************************//**
