@@ -38,7 +38,7 @@ int main(int argc, const char** argv) {
     }
   }
   catch(const lilyan::Error& e) {
-    std::cerr << e.getMessage() << std::endl;
+    std::cerr << e.getMessage();
     exit(-1);
   }
   return 0;

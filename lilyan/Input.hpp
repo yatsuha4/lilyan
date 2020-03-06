@@ -106,14 +106,22 @@ class Input {
 
   std::string toString() const {
     std::ostringstream stream;
+    if(name_) {
+      stream << *name_ << ":";
+    }
     stream << y_ << ":" << x_;
+    return stream.str();
+  }
+
+  std::string getDetail() const {
+    std::ostringstream stream;
     if(text_) {
       auto len = text_->find_first_of("\n", head_);
       if(len != std::string::npos) {
         len -= head_;
       }
-      stream << std::endl << text_->substr(head_, len)
-             << std::endl << std::string(x_, ' ') << "^";
+      stream << text_->substr(head_, len) << std::endl
+             << std::string(x_, ' ') << "^" << std::endl;
     }
     return stream.str();
   }

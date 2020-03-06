@@ -115,16 +115,11 @@ class Parser {
   }
 
   virtual void error(const std::string& message) {
-    std::ostringstream stream;
-    stream << message;
-    if(arrival_) {
-      stream << " at " << arrival_->toString();
-    }
-    throw Error(stream.str());
+    throw Error(getMessage(std::string("ERROR: ") + message, arrival_));
   }
 
   virtual void warning(const std::string& message) {
-    std::cerr << "WARNING: " << message << " at " << getInput().toString() << std::endl;
+    std::cerr << getMessage(std::string("WARNING: ") + message, arrival_);
   }
 
  protected:
@@ -235,6 +230,19 @@ class Parser {
     return !skip();
   }
 
+  std::string getMessage(const std::string& message, 
+                         const std::shared_ptr<const Input>& input) {
+    std::ostringstream stream;
+    if(input) {
+      stream << input->toString() << ": " << message << std::endl
+             << input->getDetail();
+    }
+    else {
+      stream << message;
+    }
+    return stream.str();
+  }
+
  private:
   template<class T>
   bool _getToken(const T& pattern, std::any* result) {
@@ -249,6 +257,7 @@ class Parser {
     }
     return false;
   }
+
 };
 /***********************************************************************//**
 	$Id$
