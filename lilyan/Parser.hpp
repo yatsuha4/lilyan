@@ -187,6 +187,10 @@ class Parser {
     return false;
   }
 
+  bool isEof() {
+    return !skip();
+  }
+
  private:
   template<class T>
   bool _getToken(const T& pattern, std::any* result) {

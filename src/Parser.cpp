@@ -101,6 +101,12 @@ std::any Parser::onTokens(const std::any& _tokens) {
 /***********************************************************************//**
 	@brief 
 ***************************************************************************/
+std::any Parser::tokenEof() {
+  return std::static_pointer_cast<Token>(std::make_shared<Token::Eof>());
+}
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
 std::any Parser::tokenRule(const std::smatch& _name, 
                            const std::any& _repeat) {
   auto repeat = _repeat.has_value()

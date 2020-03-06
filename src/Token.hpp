@@ -7,6 +7,7 @@
 ***************************************************************************/
 class Token {
  public:
+  class Eof;
   class Regexp;
   class Rule;
   class String;
@@ -25,6 +26,19 @@ class Token {
   virtual std::string toString() const;
   virtual std::string toCpp(const ::Rule& rule, 
                             const std::string& arg) const = 0;
+};
+/***********************************************************************//**
+	@brief 
+***************************************************************************/
+class Token::Eof
+  : public Token
+{
+ public:
+  Eof();
+  ~Eof() override = default;
+
+  std::string toCpp(const ::Rule& rule, 
+                    const std::string& arg) const override;
 };
 /***********************************************************************//**
 	@brief 

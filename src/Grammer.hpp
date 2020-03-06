@@ -70,6 +70,12 @@ class Grammer : public lilyan::Parser {
     Match match;
     lilyan::Input input(getInput());
     {
+      if(getToken(std::string("<<EOF>>"))) {
+        setMatch(match, std::make_shared<lilyan::Action>("tokenEof", [this]() { return tokenEof(); }));
+      }
+      getInput() = input;
+    }
+    {
       std::array<std::any, 2> args;
       if(getToken(std::regex(R"(\w+)"), &args.at(0)) &&
          (rule_token_r(&args.at(1)) || true)) {
@@ -200,6 +206,7 @@ class Grammer : public lilyan::Parser {
   virtual std::any onSemantics(const std::any&) = 0;
   virtual std::any onSemantic(const std::any&, const std::any&) = 0;
   virtual std::any onTokens(const std::any&) = 0;
+  virtual std::any tokenEof() = 0;
   virtual std::any tokenRule(const std::smatch&, const std::any&) = 0;
   virtual std::any tokenString(const std::string&) = 0;
   virtual std::any tokenRegexp(const std::string&) = 0;
